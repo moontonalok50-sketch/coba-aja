@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f5f0">
+    <title>cek.muka — hasil acak dari kamera</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #18231f;
+        --muted: #68736d;
+        --paper: #f5f5f0;
+        --card: #fff;
+        --green: #c9f27b;
+        --line: #e4e8df;
+      }
+
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(ellipse at 8% 8%, #e9f4d7 0, transparent 27rem),
+          var(--paper);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      button { font: inherit; }
+
+      .page {
+        width: min(1100px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 26px 0 48px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 56px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: -.04em;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: 12px;
+        background: var(--green);
+        font-size: 18px;
+      }
+
+      .badge {
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        background: #ffffffa8;
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(330px, .86fr);
+        gap: clamp(36px, 7vw, 88px);
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #587432;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #8dbd4d;
+        content: "";
+      }
+
+      h1 {
+        max-width: 580px;
+        margin: 18px 0 16px;
+        font-size: clamp(42px, 6vw, 72px);
+        line-height: .99;
+        letter-spacing: -.075em;
+      }
+
+      h1 span {
+        text-decoration: underline;
+        text-decoration-color: var(--green);
+        text-decoration-thickness: 10px;
+        text-underline-offset: 4px;
+      }
+
+      .intro {
+        max-width: 470px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      .steps {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+      }
+
+      .step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #737c76;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .step-num {
+        display: grid;
+        width: 24px;
+        height: 24px;
+        place-items: center;
+        border: 1px solid #dce1d8;
+        border-radius: 50%;
+        background: #fff;
+        font-size: 11px;
+      }
+
+      .step.active { color: var(--ink); }
+      .step.active .step-num { border-color: var(--ink); background: var(--ink); color: white; }
+
+      .verify-card {
+        padding: 20px;
+        border: 1px solid #e8eae4;
+        border-radius: 26px;
+        background: var(--card);
+        box-shadow: 0 22px 70px #29362712;
+      }
+
+      .card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 2px 14px;
+      }
+
+      .card-title { font-size: 14px; font-weight: 800; }
+      .live-label { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11px; }
+      .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #bec5bd; }
+      .live-dot.on { background: #53bd73; box-shadow: 0 0 0 4px #53bd7320; }
+
+      .camera {
+        position: relative;
+        display: grid;
+        overflow: hidden;
+        min-height: 300px;
+        aspect-ratio: 4 / 3;
+        place-items: center;
+        border-radius: 17px;
+        background: #202b27;
+      }
+
+      .camera video,
+      .camera canvas,
+      .camera .result-image {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .camera video { display: none; transform: scaleX(-1); }
+      .camera video.visible { display: block; }
+      .camera canvas { display: none; }
+      .camera .result-image { display: none; background: #f4f4f1; object-fit: contain; }
+      .camera .result-image.visible { display: block; }
+
+      .camera-empty {
+        display: grid;
+        max-width: 230px;
+        padding: 20px;
+        justify-items: center;
+        color: #d6ddd8;
+        text-align: center;
+      }
+
+      .camera-empty.hidden { display: none; }
+
+      .camera-icon {
+        display: grid;
+        width: 54px;
+        height: 54px;
+        margin-bottom: 13px;
+        place-items: center;
+        border: 1px solid #ffffff3b;
+        border-radius: 18px;
+        background: #ffffff12;
+        font-size: 24px;
+      }
+
+      .camera-empty strong { margin-bottom: 5px; color: white; font-size: 14px; }
+      .camera-empty span { font-size: 12px; line-height: 1.5; }
+
+      .scan-frame {
+        position: absolute;
+        z-index: 1;
+        display: none;
+        width: 46%;
+        height: 70%;
+        border: 2px solid #d4ff8c;
+        border-radius: 48% 48% 42% 42%;
+        box-shadow: 0 0 0 999px #111c1740;
+        pointer-events: none;
+      }
+
+      .scan-frame.visible { display: block; }
+      .scan-frame::after {
+        position: absolute;
+        top: 50%;
+        right: -20%;
+        left: -20%;
+        height: 1px;
+        background: #d4ff8cbd;
+        box-shadow: 0 0 12px #d4ff8c;
+        content: "";
+      }
+
+      .camera-status {
+        position: absolute;
+        z-index: 2;
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        display: none;
+        padding: 10px 12px;
+        border: 1px solid #ffffff2b;
+        border-radius: 12px;
+        background: #18231fbb;
+        color: white;
+        font-size: 12px;
+        backdrop-filter: blur(10px);
+      }
+
+      .camera-status.visible { display: block; }
+      .camera-status.error { background: #8d302bde; }
+
+      .actions { display: grid; gap: 9px; margin-top: 14px; }
+
+      .primary,
+      .secondary {
+        display: flex;
+        min-height: 48px;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        border: 0;
+        border-radius: 14px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 800;
+        transition: transform .16s ease, background .16s ease;
+      }
+
+      .primary { background: var(--green); color: #1b2815; }
+      .primary:hover:not(:disabled) { transform: translateY(-1px); background: #bdec68; }
+      .primary:disabled { cursor: not-allowed; opacity: .55; }
+      .secondary { min-height: 38px; background: transparent; color: var(--muted); }
+      .secondary:hover { background: #f4f6f1; color: var(--ink); }
+
+      footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 58px;
+        padding-top: 17px;
+        border-top: 1px solid var(--line);
+        color: #858d86;
+        font-size: 11px;
+      }
+
+      @media (max-width: 780px) {
+        .page { width: min(560px, calc(100% - 32px)); padding-top: 18px; }
+        header { margin-bottom: 24px; }
+        main { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+        h1 { max-width: 500px; margin-top: 12px; font-size: clamp(38px, 10vw, 54px); }
+        .intro { font-size: 14px; }
+        .steps { margin-top: 21px; }
+        .verify-card { padding: 14px; border-radius: 21px; }
+        .camera { min-height: 0; aspect-ratio: 4 / 3; }
+        footer { flex-direction: column; margin-top: 28px; }
+      }
+
+      @media (max-width: 390px) {
+        .step { gap: 5px; font-size: 10px; }
+        .steps { justify-content: space-between; }
+        .badge { padding: 7px 9px; font-size: 9px; }
+        .page { width: calc(100% - 24px); }
+        .verify-card { padding: 11px; }
+        .camera-status { right: 8px; bottom: 8px; left: 8px; font-size: 11px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="brand"><span class="brand-mark" aria-hidden="true">✳</span> cek.muka</div>
+        <div class="badge">hasil acak, santai ✨</div>
+      </header>
+
+      <main>
+        <section class="intro-section" aria-labelledby="page-title">
+          <div class="eyebrow">Cek wajah santai</div>
+          <h1 id="page-title">Arahkan wajahmu<br>ke <span>kamera.</span></h1>
+          <p class="intro">Pastikan wajah terlihat jelas di kamera, lalu ambil foto.</p>
+          <div class="steps" aria-label="Langkah verifikasi">
+            <div class="step active" id="step-camera"><span class="step-num">1</span> Kamera</div>
+            <div class="step" id="step-capture"><span class="step-num">2</span> Foto</div>
+            <div class="step" id="step-result"><span class="step-num">3</span> Hasil</div>
+          </div>
+        </section>
+
+        <section class="verify-card" aria-label="Panel cek wajah santai">
+          <div class="card-top">
+            <div class="card-title">Ambil foto</div>
+            <div class="live-label"><span class="live-dot" id="live-dot"></span><span id="live-text">Kamera mati</span></div>
+          </div>
+          <div class="camera" id="camera-area">
+            <video id="camera-video" autoplay playsinline muted aria-label="Tampilan kamera"></video>
+            <canvas id="capture-canvas"></canvas>
+            <img class="result-image" id="result-image" alt="Gambar hasil acak" decoding="async">
+            <div class="camera-empty" id="camera-empty">
+              <div class="camera-icon" aria-hidden="true">◉</div>
+              <strong>Siap untuk mulai?</strong>
+              <span>Izinkan akses kamera agar kamu bisa melihat pratinjau wajah.</span>
+            </div>
+            <div class="scan-frame" id="scan-frame" aria-hidden="true"></div>
+            <div class="camera-status" id="camera-status" role="status" aria-live="polite"></div>
+          </div>
+          <div class="actions">
+            <button class="primary" id="main-button" type="button"><span aria-hidden="true">◉</span> Aktifkan kamera</button>
+            <button class="secondary" id="reset-button" type="button" hidden>Ulangi dari awal</button>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <span>Hasil acak · bukan layanan autentikasi</span>
+        <span>Jaga privasimu, ya.</span>
+      </footer>
+    </div>
+
+    <script>
+      const video = document.querySelector("#camera-video");
+      const canvas = document.querySelector("#capture-canvas");
+      const cameraEmpty = document.querySelector("#camera-empty");
+      const cameraStatus = document.querySelector("#camera-status");
+      const resultImage = document.querySelector("#result-image");
+      const scanFrame = document.querySelector("#scan-frame");
+      const mainButton = document.querySelector("#main-button");
+      const resetButton = document.querySelector("#reset-button");
+      const liveDot = document.querySelector("#live-dot");
+      const liveText = document.querySelector("#live-text");
+      const resultChoices = [
+        { id: "foto-1", src: "assets/loading.jpg", alt: "Hasil foto pertama" },
+        { id: "foto-2", src: "assets/berhasil.jpg", alt: "Hasil foto kedua" },
+        { id: "foto-3", src: "assets/gagal.jpg", alt: "Hasil foto ketiga" }
+      ];
+      const processingImage = { src: "assets/proses.jpg", alt: "Meme proses verifikasi" };
+      let cameraStream = null;
+      let state = "idle";
+      let selectedResult = null;
+
+      function setStep(activeStep) {
+        document.querySelectorAll(".step").forEach((step) => {
+          step.classList.toggle("active", step.id === activeStep);
+        });
+      }
+
+      function showStatus(message, isError = false) {
+        cameraStatus.textContent = message;
+        cameraStatus.classList.add("visible");
+        cameraStatus.classList.toggle("error", isError);
+      }
+
+      function stopCamera() {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach((track) => track.stop());
+          cameraStream = null;
+        }
+        video.srcObject = null;
+        video.classList.remove("visible");
+        liveDot.classList.remove("on");
+        liveText.textContent = "Kamera mati";
+      }
+
+      async function startCamera() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          showStatus("Browser ini tidak mendukung akses kamera. Coba buka lewat localhost atau HTTPS.", true);
+          return;
+        }
+
+        mainButton.disabled = true;
+        mainButton.textContent = "Meminta izin kamera...";
+        cameraStatus.classList.remove("visible", "error");
+
+        try {
+          cameraStream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: { facingMode: "user" }
+          });
+          video.srcObject = cameraStream;
+          await video.play();
+          video.classList.add("visible");
+          cameraEmpty.classList.add("hidden");
+          liveDot.classList.add("on");
+          liveText.textContent = "Kamera aktif";
+          mainButton.innerHTML = '<span aria-hidden="true">◎</span> Ambil foto';
+          mainButton.disabled = false;
+          state = "ready";
+          setStep("step-capture");
+        } catch (error) {
+          stopCamera();
+          const message = error.name === "NotAllowedError"
+            ? "Izin kamera ditolak. Izinkan kamera dari pengaturan situs, lalu coba lagi."
+            : error.name === "NotFoundError"
+              ? "Kamera tidak ditemukan di perangkat ini."
+              : "Kamera tidak dapat dibuka. Pastikan kamera tidak sedang dipakai aplikasi lain.";
+          showStatus(message, true);
+          mainButton.innerHTML = '<span aria-hidden="true">◉</span> Coba aktifkan kamera lagi';
+          mainButton.disabled = false;
+          state = "idle";
+        }
+      }
+
+      function captureAndVerify() {
+        if (!video.videoWidth || !video.videoHeight) {
+          showStatus("Kamera belum siap. Tunggu sebentar lalu coba lagi.", true);
+          return;
+        }
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const context = canvas.getContext("2d");
+        context.translate(canvas.width, 0);
+        context.scale(-1, 1);
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        stopCamera();
+        video.classList.remove("visible");
+        cameraEmpty.classList.add("hidden");
+        scanFrame.classList.add("visible");
+        resultImage.src = processingImage.src;
+        resultImage.alt = processingImage.alt;
+        resultImage.classList.add("visible");
+        showStatus("Memilih hasil acak... sebentar ya 👀");
+        mainButton.disabled = true;
+        mainButton.textContent = "Sedang memproses...";
+        state = "processing";
+        setStep("step-result");
+
+        window.setTimeout(() => {
+          scanFrame.classList.remove("visible");
+          const chosen = resultChoices[Math.floor(Math.random() * resultChoices.length)];
+          selectedResult = chosen;
+          resultImage.src = chosen.src;
+          resultImage.alt = chosen.alt;
+          resultImage.classList.add("visible");
+          cameraStatus.classList.remove("visible");
+          mainButton.hidden = true;
+          resetButton.hidden = false;
+          state = "result";
+        }, 1500);
+      }
+
+      function reset() {
+        stopCamera();
+        canvas.width = 0;
+        canvas.height = 0;
+        selectedResult = null;
+        resultImage.removeAttribute("src");
+        resultImage.classList.remove("visible");
+        cameraEmpty.classList.remove("hidden");
+        cameraStatus.classList.remove("visible", "error");
+        scanFrame.classList.remove("visible");
+        resetButton.hidden = true;
+        mainButton.hidden = false;
+        mainButton.disabled = false;
+        mainButton.innerHTML = '<span aria-hidden="true">◉</span> Aktifkan kamera';
+        state = "idle";
+        setStep("step-camera");
+      }
+
+      mainButton.addEventListener("click", () => {
+        if (state === "ready") {
+          captureAndVerify();
+        } else if (state === "idle") {
+          startCamera();
+        }
+      });
+      resetButton.addEventListener("click", reset);
+      window.addEventListener("pagehide", stopCamera);
+    </script>
+  </body>
+</html>
