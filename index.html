@@ -156,7 +156,7 @@
           </h1>
 
           <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-            Sistem pemindai cek wajah mu wok seberapa mirip
+            Sistem pemindai ekspresi dan visual acak secara otomatis. Arahkan posisi wajah ke kamera untuk memulai pemindaian biometrik.
           </p>
 
           <div class="grid grid-cols-3 gap-3 pt-2">
@@ -273,23 +273,16 @@
               </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="pt-4 space-y-2">
               <button id="main-button" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-cyber-neon via-emerald-400 to-cyber-accent hover:opacity-90 text-slate-950 font-black font-mono text-sm tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_25px_rgba(0,255,204,0.3)] active:scale-[0.98]">
                 <i class="fa-solid fa-power-off"></i>
                 <span>START CAMERA SCAN</span>
               </button>
 
-              <div id="result-actions" class="hidden flex gap-2">
-                <button id="share-button" type="button" onclick="shareResult()" class="flex-1 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:opacity-90 text-slate-950 font-black font-mono text-xs tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] active:scale-[0.98]">
-                  <i class="fa-brands fa-whatsapp text-base"></i>
-                  <span>SHARE HASIL</span>
-                </button>
-                <button id="reset-button" type="button" class="flex-1 py-3.5 px-4 rounded-2xl glass-hud hover:bg-slate-800/80 text-slate-200 font-bold font-mono text-xs tracking-wider flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
-                  <i class="fa-solid fa-rotate-right text-cyber-neon"></i>
-                  <span>RESET</span>
-                </button>
-              </div>
+              <button id="reset-button" type="button" class="hidden w-full py-3.5 px-6 rounded-2xl glass-hud hover:bg-slate-800/80 text-slate-200 font-bold font-mono text-xs tracking-wider flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                <i class="fa-solid fa-rotate-right text-cyber-neon"></i>
+                <span>SCAN REPEAT / RESET</span>
+              </button>
             </div>
 
           </div>
@@ -315,7 +308,6 @@
       const scanHud = document.querySelector("#scan-hud");
       const mainButton = document.querySelector("#main-button");
       const resetButton = document.querySelector("#reset-button");
-      const resultActions = document.querySelector("#result-actions");
       const statusDot = document.querySelector("#status-dot");
       const statusText = document.querySelector("#status-text");
       const resultStats = document.querySelector("#result-stats");
@@ -503,8 +495,7 @@
           }, 100);
 
           mainButton.classList.add("hidden");
-          resultActions.classList.remove("hidden");
-          resultActions.classList.add("flex");
+          resetButton.classList.remove("hidden");
           state = "result";
         }, 1800);
       }
@@ -523,31 +514,12 @@
         barCharm.style.width = "0%";
         hideStatus();
 
-        resultActions.classList.add("hidden");
-        resultActions.classList.remove("flex");
+        resetButton.classList.add("hidden");
         mainButton.classList.remove("hidden");
         mainButton.disabled = false;
         mainButton.innerHTML = '<i class="fa-solid fa-power-off"></i><span>START CAMERA SCAN</span>';
         state = "idle";
         setStepUI(1);
-      }
-
-      function shareResult() {
-        playSFX('beep');
-        const aura = barAura.style.width || "85%";
-        const charm = barCharm.style.width || "90%";
-        const shareText = `🔥 Hasil Analisis Cek Wajahku di CEK.MUKA AI!\n\n✨ Aura Vibes: ${aura}\n🧬 Kemiripan: ${charm}\n\nCoba cek wajahmu di sini: ${window.location.href}`;
-
-        if (navigator.share) {
-          navigator.share({
-            title: 'CEK.MUKA AI Result',
-            text: shareText,
-            url: window.location.href,
-          }).catch((err) => console.log('Share error/canceled', err));
-        } else {
-          const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-          window.open(waUrl, '_blank');
-        }
       }
 
       mainButton.addEventListener("click", () => {
