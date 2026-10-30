@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="id" class="dark">
+<html lang="id" class="dark scroll-smooth">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#090d16">
-    <title>cek.muka — Pemindai Wajah Interaktif</title>
+    <meta name="theme-color" content="#030712">
+    <title>cek.muka — AI Face Scanner & Biometric Simulator</title>
 
-    <!-- Google Fonts & Tailwind CSS -->
+    <!-- Google Fonts & CDN Icon/Tailwind -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -20,29 +20,41 @@
           extend: {
             fontFamily: {
               sans: ['Plus Jakarta Sans', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
-              brand: {
-                50: '#f0fdf4',
-                400: '#4ade80',
-                500: '#22c55e',
-                900: '#14532d',
-                accent: '#a3e635'
+              cyber: {
+                bg: '#030712',
+                card: 'rgba(15, 23, 42, 0.6)',
+                neon: '#00ffcc',
+                purple: '#a855f7',
+                accent: '#ccff00',
               }
             },
             animation: {
-              'scanline': 'scan 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'pop-in': 'popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'spin-slow': 'spin 12s linear infinite',
+              'spin-reverse': 'spin-reverse 8s linear infinite',
+              'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+              'scan-laser': 'scanLaser 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 4s ease-in-out infinite',
+              'glitch': 'glitch 1s linear infinite',
             },
             keyframes: {
-              scan: {
-                '0%, 100%': { top: '5%' },
-                '50%': { top: '90%' },
+              'spin-reverse': {
+                '0%': { transform: 'rotate(360deg)' },
+                '100%': { transform: 'rotate(0deg)' },
               },
-              popIn: {
-                '0%': { opacity: '0', transform: 'scale(0.92)' },
-                '100%': { opacity: '1', transform: 'scale(1)' },
+              pulseGlow: {
+                '0%, 100%': { opacity: '0.4', filter: 'drop-shadow(0 0 15px rgba(0,255,204,0.4))' },
+                '50%': { opacity: '0.9', filter: 'drop-shadow(0 0 30px rgba(0,255,204,0.8))' },
+              },
+              scanLaser: {
+                '0%, 100%': { top: '0%' },
+                '50%': { top: '95%' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-10px)' },
               }
             }
           }
@@ -52,163 +64,247 @@
 
     <style>
       body {
-        background-color: #080c14;
+        background-color: #030712;
         background-image: 
-          radial-gradient(at 10% 10%, rgba(34, 197, 94, 0.12) 0px, transparent 50%),
-          radial-gradient(at 90% 80%, rgba(163, 230, 53, 0.08) 0px, transparent 50%);
+          radial-gradient(circle at 15% 15%, rgba(0, 255, 204, 0.08) 0%, transparent 40%),
+          radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
+          linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
         background-attachment: fixed;
       }
 
-      .glass-panel {
-        background: rgba(15, 23, 42, 0.65);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+      .glass-hud {
+        background: rgba(11, 19, 38, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 255, 204, 0.15);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
       }
 
-      .glass-card {
-        background: rgba(26, 36, 56, 0.5);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+      .glow-border {
+        position: relative;
       }
-
-      .hud-corner {
+      .glow-border::before {
+        content: '';
         position: absolute;
-        width: 16px;
-        height: 16px;
-        border-color: #a3e635;
+        inset: -1px;
+        background: linear-gradient(45deg, #00ffcc, transparent, #a855f7);
+        border-radius: inherit;
+        z-index: -1;
+        opacity: 0.3;
+        transition: opacity 0.3s;
+      }
+      .glow-border:hover::before {
+        opacity: 0.8;
+      }
+
+      /* Scanline Screen Overlay Effect */
+      .scanline-overlay {
+        background: linear-gradient(
+          to bottom,
+          rgba(255,255,255,0),
+          rgba(255,255,255,0) 50%,
+          rgba(0, 0, 0, 0.3) 50%,
+          rgba(0, 0, 0, 0.3)
+        );
+        background-size: 100% 4px;
       }
     </style>
   </head>
-  <body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-slate-950 font-sans antialiased">
+  <body class="text-slate-100 min-h-screen flex flex-col justify-between font-sans antialiased selection:bg-cyber-neon selection:text-slate-950 overflow-x-hidden">
 
-    <div class="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-grow flex flex-col justify-between">
+    <!-- Glowing Background Ambient Spheres -->
+    <div class="fixed top-20 left-1/4 w-96 h-96 bg-cyber-neon/10 rounded-full blur-[120px] pointer-events-none animate-pulse-glow"></div>
+    <div class="fixed bottom-10 right-1/4 w-96 h-96 bg-cyber-purple/10 rounded-full blur-[120px] pointer-events-none animate-pulse-glow" style="animation-delay: 1s;"></div>
+
+    <div class="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-grow flex flex-col justify-between relative z-10">
       
-      <!-- Navbar / Header -->
-      <header class="flex items-center justify-between pb-8">
-        <div class="flex items-center gap-3 group cursor-pointer">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-accent to-brand-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform">
-            <i class="fa-solid fa-face-smile"></i>
+      <!-- Top Cyber Navigation Header -->
+      <header class="flex items-center justify-between pb-6 border-b border-slate-800/80">
+        <div class="flex items-center gap-3">
+          <div class="relative w-11 h-11 rounded-2xl bg-slate-900 border border-cyber-neon/40 flex items-center justify-center text-cyber-neon shadow-[0_0_15px_rgba(0,255,204,0.3)] animate-float">
+            <i class="fa-solid fa-microchip text-xl"></i>
+            <span class="absolute -top-1 -right-1 w-3 h-3 bg-cyber-neon rounded-full animate-ping"></span>
           </div>
           <div>
-            <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-              cek.muka
-            </span>
-            <span class="block text-[10px] text-slate-400 font-semibold tracking-wider uppercase">AI Simulator</span>
+            <div class="flex items-center gap-2">
+              <span class="font-black text-2xl tracking-wider font-mono bg-gradient-to-r from-cyber-neon via-white to-cyber-purple bg-clip-text text-transparent">
+                CEK.MUKA
+              </span>
+              <span class="px-2 py-0.5 text-[9px] font-mono font-bold bg-cyber-neon/10 text-cyber-neon border border-cyber-neon/30 rounded">v2.5 PRO</span>
+            </div>
+            <p class="text-[11px] text-slate-400 font-mono tracking-widest uppercase">System Biometric Simulator</p>
           </div>
         </div>
 
-        <div class="px-3 py-1.5 rounded-full glass-panel border border-slate-700/60 text-slate-300 text-xs font-semibold flex items-center gap-2 shadow-sm">
-          <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
-          <span>Hasil Acak & Santai</span>
-        </div>
+        <!-- Mute Sound Toggle Button -->
+        <button id="sound-toggle" onclick="toggleAudio()" class="px-3 py-1.5 rounded-xl glass-hud text-slate-300 text-xs font-mono flex items-center gap-2 hover:border-cyber-neon transition-all">
+          <i id="sound-icon" class="fa-solid fa-volume-high text-cyber-neon"></i>
+          <span id="sound-text" class="hidden sm:inline">SFX: ON</span>
+        </button>
       </header>
 
-      <!-- Main Layout -->
-      <main class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto py-4">
+      <!-- Main Interactive Content Grid -->
+      <main class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-8 my-auto">
         
-        <!-- Left Column: Title & Steps -->
-        <section class="lg:col-span-6 space-y-6">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-500/10 border border-brand-500/20 text-brand-accent text-xs font-extrabold tracking-widest uppercase">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Face Detection Fun
+        <!-- Left Panel: Hero Banner & Controls -->
+        <section class="lg:col-span-5 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-cyber-neon/30 text-cyber-neon text-xs font-mono shadow-[0_0_10px_rgba(0,255,204,0.15)]">
+            <i class="fa-solid fa-circle-dot animate-pulse"></i> AI SCANNER READY
           </div>
 
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] text-white">
-            Arahkan wajahmu ke <span class="bg-gradient-to-r from-brand-accent via-brand-400 to-emerald-300 bg-clip-text text-transparent underline decoration-brand-accent/40 underline-offset-8">kamera.</span>
+          <h1 class="text-4xl sm:text-5xl font-black tracking-tight leading-none text-white">
+            Analisis Wajah <br>
+            <span class="bg-gradient-to-r from-cyber-neon via-emerald-300 to-cyber-accent bg-clip-text text-transparent">
+              Hologram Realtime
+            </span>
           </h1>
 
-          <p class="text-slate-400 text-base leading-relaxed max-w-lg">
-            Pastikan wajahmu terlihat jelas dan berada di tengah area pemindaian untuk mendapatkan hasil analisis acak yang mengejutkan!
+          <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+            Sistem pemindai ekspresi dan visual acak secara otomatis. Arahkan posisi wajah ke kamera untuk memulai pemindaian biomeatrik.
           </p>
 
-          <!-- Interactive Progress Steps -->
-          <div class="pt-2 flex items-center gap-3" aria-label="Langkah verifikasi">
-            <div id="step-camera" class="step-item flex items-center gap-2 px-3.5 py-2 rounded-xl glass-card border border-brand-accent/40 text-white font-bold text-xs transition-all duration-300">
-              <span class="w-5 h-5 rounded-full bg-brand-accent text-slate-950 flex items-center justify-center text-[11px] font-black">1</span>
+          <!-- Interactive Metric HUD Cards -->
+          <div class="grid grid-cols-3 gap-3 pt-2">
+            <div class="glass-hud p-3 rounded-2xl border-slate-800 text-center">
+              <span class="block text-[10px] text-slate-400 font-mono uppercase">Akurasi</span>
+              <span class="text-lg font-bold font-mono text-cyber-neon">99.8%</span>
+            </div>
+            <div class="glass-hud p-3 rounded-2xl border-slate-800 text-center">
+              <span class="block text-[10px] text-slate-400 font-mono uppercase">Latency</span>
+              <span class="text-lg font-bold font-mono text-cyber-purple">12ms</span>
+            </div>
+            <div class="glass-hud p-3 rounded-2xl border-slate-800 text-center">
+              <span class="block text-[10px] text-slate-400 font-mono uppercase">FPS</span>
+              <span class="text-lg font-bold font-mono text-cyber-accent">60.0</span>
+            </div>
+          </div>
+
+          <!-- Progress Step Timeline -->
+          <div class="pt-4 flex items-center justify-between font-mono text-xs text-slate-400">
+            <div id="step-1" class="flex items-center gap-2 text-cyber-neon font-bold">
+              <span class="w-6 h-6 rounded-lg bg-cyber-neon/20 border border-cyber-neon flex items-center justify-center text-xs">1</span>
               <span>Kamera</span>
             </div>
-            <i class="fa-solid fa-chevron-right text-slate-600 text-xs"></i>
-            <div id="step-capture" class="step-item flex items-center gap-2 px-3.5 py-2 rounded-xl glass-card text-slate-400 font-medium text-xs transition-all duration-300">
-              <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-[11px] font-bold">2</span>
-              <span>Ambil Foto</span>
+            <div class="h-0.5 flex-1 mx-2 bg-slate-800"></div>
+            <div id="step-2" class="flex items-center gap-2 opacity-50">
+              <span class="w-6 h-6 rounded-lg bg-slate-800 flex items-center justify-center text-xs">2</span>
+              <span>Pindai</span>
             </div>
-            <i class="fa-solid fa-chevron-right text-slate-600 text-xs"></i>
-            <div id="step-result" class="step-item flex items-center gap-2 px-3.5 py-2 rounded-xl glass-card text-slate-400 font-medium text-xs transition-all duration-300">
-              <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-[11px] font-bold">3</span>
+            <div class="h-0.5 flex-1 mx-2 bg-slate-800"></div>
+            <div id="step-3" class="flex items-center gap-2 opacity-50">
+              <span class="w-6 h-6 rounded-lg bg-slate-800 flex items-center justify-center text-xs">3</span>
               <span>Hasil</span>
             </div>
           </div>
         </section>
 
-        <!-- Right Column: Camera Viewfinder Card -->
-        <section class="lg:col-span-6">
-          <div class="glass-panel p-4 sm:p-5 rounded-3xl shadow-2xl relative overflow-hidden group border border-slate-700/50">
+        <!-- Right Panel: Futuristic Camera Viewfinder Card -->
+        <section class="lg:col-span-7">
+          <div class="glass-hud p-4 sm:p-6 rounded-3xl glow-border relative overflow-hidden">
             
-            <!-- Card Header Status -->
-            <div class="flex items-center justify-between pb-3 px-1">
-              <span class="text-xs font-bold text-slate-300 tracking-wide uppercase flex items-center gap-2">
-                <i class="fa-solid fa-camera-retro text-brand-accent"></i> Live Viewfinder
-              </span>
+            <!-- Viewfinder Top Bar -->
+            <div class="flex items-center justify-between pb-3 px-1 font-mono text-xs">
+              <div class="flex items-center gap-2 text-slate-300">
+                <i class="fa-solid fa-crosshairs text-cyber-neon"></i>
+                <span class="tracking-wider">SYS.VIEWFINDER // LIVE</span>
+              </div>
               <div class="flex items-center gap-2">
-                <span id="live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-600 transition-colors duration-300"></span>
-                <span id="live-text" class="text-xs font-semibold text-slate-400">Kamera Mati</span>
+                <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                <span id="status-text" class="text-slate-400">OFFLINE</span>
               </div>
             </div>
 
-            <!-- Viewfinder Area -->
-            <div id="camera-area" class="relative aspect-[4/3] w-full rounded-2xl bg-slate-950/80 overflow-hidden border border-slate-800 flex items-center justify-center">
+            <!-- Main Viewfinder Window -->
+            <div id="camera-area" class="relative aspect-[4/3] w-full rounded-2xl bg-slate-950 overflow-hidden border border-slate-800 flex items-center justify-center shadow-inner">
               
-              <!-- Video Camera Feed -->
+              <!-- Video Stream -->
               <video id="camera-video" class="hidden absolute inset-0 w-full h-full object-cover -scale-x-100" autoplay playsinline muted></video>
-              
-              <!-- Offscreen Canvas -->
               <canvas id="capture-canvas" class="hidden"></canvas>
               
-              <!-- Result / Processing Image -->
-              <img id="result-image" class="hidden absolute inset-0 w-full h-full object-contain bg-slate-950 animate-pop-in z-10" alt="Hasil Foto" decoding="async">
+              <!-- Result / Output Image -->
+              <img id="result-image" class="hidden absolute inset-0 w-full h-full object-contain bg-slate-950 z-10" alt="Hasil Scan">
 
-              <!-- Empty / Placeholder State -->
-              <div id="camera-empty" class="text-center p-6 space-y-3 z-0">
-                <div class="w-16 h-16 rounded-2xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-center mx-auto text-brand-accent text-2xl shadow-inner">
-                  <i class="fa-solid fa-video"></i>
+              <!-- Scanline Screen Effect -->
+              <div class="scanline-overlay absolute inset-0 pointer-events-none z-20 opacity-40"></div>
+
+              <!-- Idle / Empty State Layout -->
+              <div id="camera-empty" class="text-center p-6 space-y-4 z-10">
+                <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
+                  <div class="absolute inset-0 rounded-full border-2 border-dashed border-cyber-neon/40 animate-spin-slow"></div>
+                  <div class="w-14 h-14 rounded-full bg-slate-900 border border-cyber-neon/60 flex items-center justify-center text-cyber-neon text-2xl shadow-[0_0_20px_rgba(0,255,204,0.2)]">
+                    <i class="fa-solid fa-camera"></i>
+                  </div>
                 </div>
                 <div class="space-y-1">
-                  <h3 class="text-white font-bold text-base">Siap Memindai Wajah?</h3>
-                  <p class="text-slate-400 text-xs max-w-xs mx-auto leading-relaxed">
-                    Klik tombol di bawah untuk memberikan akses kamera perangkatmu.
+                  <h3 class="text-white font-bold text-base font-mono">STANDBY MODE</h3>
+                  <p class="text-slate-400 text-xs max-w-xs mx-auto">
+                    Aktifkan izin kamera untuk memulai kalkulasi biomeatrik secara otomatis.
                   </p>
                 </div>
               </div>
 
-              <!-- Futuristic Laser HUD Overlay -->
-              <div id="scan-frame" class="hidden absolute inset-0 pointer-events-none z-20">
-                <!-- Face Frame Target -->
-                <div class="absolute inset-x-16 inset-y-10 border-2 border-brand-accent/60 rounded-3xl shadow-[0_0_20px_rgba(163,230,53,0.2)]">
-                  <!-- HUD Corner Markers -->
-                  <div class="hud-corner top-0 left-0 border-t-2 border-l-2 -mt-0.5 -ml-0.5 rounded-tl-lg"></div>
-                  <div class="hud-corner top-0 right-0 border-t-2 border-r-2 -mt-0.5 -mr-0.5 rounded-tr-lg"></div>
-                  <div class="hud-corner bottom-0 left-0 border-b-2 border-l-2 -mb-0.5 -ml-0.5 rounded-bl-lg"></div>
-                  <div class="hud-corner bottom-0 right-0 border-b-2 border-r-2 -mb-0.5 -mr-0.5 rounded-br-lg"></div>
-                  
-                  <!-- Animated Laser Scanline -->
-                  <div class="absolute inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-brand-accent to-transparent shadow-[0_0_12px_#a3e635] animate-scanline"></div>
+              <!-- Cyber Scan HUD Overlay -->
+              <div id="scan-hud" class="hidden absolute inset-0 pointer-events-none z-30">
+                <!-- Rotating Ring Center Overlay -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-56 h-56 rounded-full border border-cyber-neon/30 animate-spin-slow flex items-center justify-center">
+                    <div class="w-48 h-48 rounded-full border border-dashed border-cyber-purple/50 animate-spin-reverse"></div>
+                  </div>
+                </div>
+
+                <!-- Biometric Target Box -->
+                <div class="absolute inset-x-12 inset-y-8 border border-cyber-neon/40 rounded-2xl">
+                  <!-- HUD Corner Brackets -->
+                  <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyber-neon -mt-1 -ml-1"></div>
+                  <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyber-neon -mt-1 -mr-1"></div>
+                  <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyber-neon -mb-1 -ml-1"></div>
+                  <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyber-neon -mb-1 -mr-1"></div>
+
+                  <!-- Scanning Laser Bar -->
+                  <div class="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyber-neon to-transparent shadow-[0_0_15px_#00ffcc] animate-scan-laser"></div>
+                </div>
+
+                <!-- Telemetry HUD Text Overlay -->
+                <div class="absolute top-4 left-4 font-mono text-[10px] text-cyber-neon bg-slate-950/80 px-2 py-1 rounded border border-cyber-neon/30">
+                  REC // 60FPS
+                </div>
+                <div class="absolute bottom-4 right-4 font-mono text-[10px] text-cyber-purple bg-slate-950/80 px-2 py-1 rounded border border-cyber-purple/30">
+                  LOC: X.884 Y.102
                 </div>
               </div>
 
-              <!-- Camera Status Toast inside Viewfinder -->
-              <div id="camera-status" class="hidden absolute bottom-4 left-4 right-4 z-30 p-3 rounded-xl glass-panel text-xs text-white text-center font-semibold border border-amber-500/30 backdrop-blur-md"></div>
+              <!-- Status Notification Toast Banner -->
+              <div id="camera-status" class="hidden absolute bottom-4 left-4 right-4 z-40 p-3 rounded-xl glass-hud font-mono text-xs text-center border border-amber-500/40 text-amber-200 backdrop-blur-md"></div>
             </div>
 
-            <!-- Action Buttons -->
+            <!-- Dynamic Result Metrics Widget (Revealed after scan) -->
+            <div id="result-stats" class="hidden mt-4 p-4 rounded-2xl glass-hud border-cyber-neon/30 grid grid-cols-2 gap-3 font-mono text-xs">
+              <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                <span class="text-slate-400 block mb-1">AURA VIBES</span>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="bar-aura" class="bg-cyber-neon h-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                <span class="text-slate-400 block mb-1">KETAMPANAN / KECANTIKAN</span>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="bar-charm" class="bg-cyber-purple h-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Primary Action Buttons -->
             <div class="pt-4 space-y-2">
-              <button id="main-button" type="button" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-brand-accent via-brand-400 to-brand-500 hover:opacity-95 text-slate-950 font-extrabold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-500/25 active:scale-[0.98]">
+              <button id="main-button" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-cyber-neon via-emerald-400 to-cyber-accent hover:opacity-90 text-slate-950 font-black font-mono text-sm tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_25px_rgba(0,255,204,0.3)] active:scale-[0.98]">
                 <i class="fa-solid fa-power-off"></i>
-                <span>Aktifkan Kamera</span>
+                <span>START CAMERA SCAN</span>
               </button>
 
-              <button id="reset-button" type="button" class="hidden w-full py-3 px-6 rounded-xl glass-card hover:bg-slate-800/80 text-slate-300 font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
-                <i class="fa-solid fa-rotate-right"></i>
-                <span>Coba Lagi Dari Awal</span>
+              <button id="reset-button" type="button" class="hidden w-full py-3.5 px-6 rounded-2xl glass-hud hover:bg-slate-800/80 text-slate-200 font-bold font-mono text-xs tracking-wider flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                <i class="fa-solid fa-rotate-right text-cyber-neon"></i>
+                <span>SCAN REPEAT / RESET</span>
               </button>
             </div>
 
@@ -217,28 +313,31 @@
 
       </main>
 
-      <!-- Footer -->
-      <footer class="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-        <p>© 2026 cek.muka — Hasil acak & hiburan semata (Bukan autentikasi resmi).</p>
-        <div class="flex items-center gap-4">
-          <span class="hover:text-slate-400 cursor-pointer transition-colors"><i class="fa-solid fa-shield-halved mr-1"></i> Privasi Terjaga</span>
+      <!-- Cyber Footer -->
+      <footer class="pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-slate-500">
+        <p>© 2026 CEK.MUKA AI — Simulated Biometrics. Fun Purpose Only.</p>
+        <div class="flex items-center gap-3">
+          <span class="text-cyber-neon"><i class="fa-solid fa-shield-halved"></i> SECURE // ENCRYPTED</span>
         </div>
       </footer>
 
     </div>
 
-    <!-- Application Script Logic -->
+    <!-- Interactive Script & Web Audio SFX Engine -->
     <script>
       const video = document.querySelector("#camera-video");
       const canvas = document.querySelector("#capture-canvas");
       const cameraEmpty = document.querySelector("#camera-empty");
       const cameraStatus = document.querySelector("#camera-status");
       const resultImage = document.querySelector("#result-image");
-      const scanFrame = document.querySelector("#scan-frame");
+      const scanHud = document.querySelector("#scan-hud");
       const mainButton = document.querySelector("#main-button");
       const resetButton = document.querySelector("#reset-button");
-      const liveDot = document.querySelector("#live-dot");
-      const liveText = document.querySelector("#live-text");
+      const statusDot = document.querySelector("#status-dot");
+      const statusText = document.querySelector("#status-text");
+      const resultStats = document.querySelector("#result-stats");
+      const barAura = document.querySelector("#bar-aura");
+      const barCharm = document.querySelector("#bar-charm");
 
       const resultChoices = [
         { id: "foto-1", src: "assets/loading.jpg", alt: "Hasil foto pertama" },
@@ -248,36 +347,79 @@
       const processingImage = { src: "assets/proses.jpg", alt: "Proses verifikasi" };
 
       let cameraStream = null;
-      let state = "idle"; // "idle" | "ready" | "processing" | "result"
+      let state = "idle";
+      let audioEnabled = true;
+      let audioCtx = null;
 
-      function updateStepUI(activeStepId) {
-        const steps = [
-          { id: "step-camera", num: 1, label: "Kamera" },
-          { id: "step-capture", num: 2, label: "Ambil Foto" },
-          { id: "step-result", num: 3, label: "Hasil" }
-        ];
+      // Web Audio Synthesizer SFX Engine (No External Audio Files Needed)
+      function playSFX(type) {
+        if (!audioEnabled) return;
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === 'suspended') audioCtx.resume();
 
-        steps.forEach(step => {
-          const el = document.getElementById(step.id);
-          const badge = el.querySelector("span:first-child");
-          
-          if (step.id === activeStepId) {
-            el.className = "step-item flex items-center gap-2 px-3.5 py-2 rounded-xl glass-card border border-brand-accent/50 text-white font-bold text-xs transition-all duration-300 shadow-md shadow-brand-500/10";
-            badge.className = "w-5 h-5 rounded-full bg-brand-accent text-slate-950 flex items-center justify-center text-[11px] font-black";
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          const now = audioCtx.currentTime;
+
+          if (type === 'beep') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, now);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+            osc.start(now);
+            osc.stop(now + 0.15);
+          } else if (type === 'scan') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(300, now);
+            osc.frequency.exponentialRampToValueAtTime(1200, now + 1.2);
+            gain.gain.setValueAtTime(0.05, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 1.2);
+            osc.start(now);
+            osc.stop(now + 1.2);
+          } else if (type === 'success') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(523.25, now); // C5
+            osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+            osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+            osc.start(now);
+            osc.stop(now + 0.5);
+          }
+        } catch (e) {
+          console.warn("Audio Context Error", e);
+        }
+      }
+
+      function toggleAudio() {
+        audioEnabled = !audioEnabled;
+        document.getElementById('sound-text').innerText = audioEnabled ? 'SFX: ON' : 'SFX: OFF';
+        document.getElementById('sound-icon').className = audioEnabled ? 'fa-solid fa-volume-high text-cyber-neon' : 'fa-solid fa-volume-xmark text-slate-500';
+      }
+
+      function setStepUI(stepNum) {
+        document.querySelectorAll("[id^='step-']").forEach((el, index) => {
+          if (index + 1 <= stepNum) {
+            el.classList.remove("opacity-50");
+            el.classList.add("text-cyber-neon", "font-bold");
           } else {
-            el.className = "step-item flex items-center gap-2 px-3.5 py-2 rounded-xl glass-card text-slate-400 font-medium text-xs transition-all duration-300 opacity-70";
-            badge.className = "w-5 h-5 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-[11px] font-bold";
+            el.classList.add("opacity-50");
+            el.classList.remove("text-cyber-neon", "font-bold");
           }
         });
       }
 
-      function showStatus(message, isError = false) {
-        cameraStatus.textContent = message;
+      function showStatus(msg, isError = false) {
+        cameraStatus.textContent = msg;
         cameraStatus.classList.remove("hidden");
         if (isError) {
-          cameraStatus.className = "absolute bottom-4 left-4 right-4 z-30 p-3 rounded-xl bg-red-950/80 text-red-200 text-xs text-center font-semibold border border-red-500/40 backdrop-blur-md animate-pop-in";
+          cameraStatus.className = "absolute bottom-4 left-4 right-4 z-40 p-3 rounded-xl glass-hud font-mono text-xs text-center border border-red-500/50 text-red-300";
         } else {
-          cameraStatus.className = "absolute bottom-4 left-4 right-4 z-30 p-3 rounded-xl glass-panel text-slate-200 text-xs text-center font-semibold border border-brand-accent/30 backdrop-blur-md animate-pop-in";
+          cameraStatus.className = "absolute bottom-4 left-4 right-4 z-40 p-3 rounded-xl glass-hud font-mono text-xs text-center border border-cyber-neon/40 text-cyber-neon";
         }
       }
 
@@ -287,24 +429,25 @@
 
       function stopCamera() {
         if (cameraStream) {
-          cameraStream.getTracks().forEach((track) => track.stop());
+          cameraStream.getTracks().forEach(track => track.stop());
           cameraStream = null;
         }
         video.srcObject = null;
         video.classList.add("hidden");
-        liveDot.className = "w-2.5 h-2.5 rounded-full bg-slate-600";
-        liveText.textContent = "Kamera Mati";
-        liveText.className = "text-xs font-semibold text-slate-400";
+        statusDot.className = "w-2.5 h-2.5 rounded-full bg-slate-600";
+        statusText.textContent = "OFFLINE";
+        statusText.className = "text-slate-400";
       }
 
       async function startCamera() {
+        playSFX('beep');
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          showStatus("Browser tidak mendukung akses kamera. Pastikan berjalan di HTTPS/localhost.", true);
+          showStatus("Browser tidak mendukung WebCam API. Gunakan HTTPS.", true);
           return;
         }
 
         mainButton.disabled = true;
-        mainButton.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i><span>Meminta Izin Kamera...</span>';
+        mainButton.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i><span>CONNECTING CAMERA...</span>';
         hideStatus();
 
         try {
@@ -314,27 +457,23 @@
           });
           video.srcObject = cameraStream;
           await video.play();
-          
+
           video.classList.remove("hidden");
           cameraEmpty.classList.add("hidden");
-          
-          liveDot.className = "w-2.5 h-2.5 rounded-full bg-brand-accent animate-pulse shadow-[0_0_8px_#a3e635]";
-          liveText.textContent = "Kamera Aktif";
-          liveText.className = "text-xs font-bold text-brand-accent";
-          
-          mainButton.innerHTML = '<i class="fa-solid fa-camera"></i><span>Ambil Foto Sekarang</span>';
+          scanHud.classList.remove("hidden");
+
+          statusDot.className = "w-2.5 h-2.5 rounded-full bg-cyber-neon animate-ping";
+          statusText.textContent = "ONLINE // ACTIVE";
+          statusText.className = "text-cyber-neon font-bold";
+
+          mainButton.innerHTML = '<i class="fa-solid fa-expand"></i><span>CAPTURE & ANALYZE</span>';
           mainButton.disabled = false;
           state = "ready";
-          updateStepUI("step-capture");
+          setStepUI(2);
         } catch (error) {
           stopCamera();
-          const message = error.name === "NotAllowedError"
-            ? "Izin kamera ditolak. Berikan akses pada pengaturan browser."
-            : error.name === "NotFoundError"
-              ? "Perangkat kamera tidak ditemukan."
-              : "Gagal mengakses kamera. Tutup aplikasi lain yang sedang menggunakannya.";
-          showStatus(message, true);
-          mainButton.innerHTML = '<i class="fa-solid fa-rotate-right"></i><span>Coba Aktifkan Lagi</span>';
+          showStatus("Akses Kamera Ditolak / Tidak Ditemukan.", true);
+          mainButton.innerHTML = '<i class="fa-solid fa-rotate-right"></i><span>RETRY CAMERA</span>';
           mainButton.disabled = false;
           state = "idle";
         }
@@ -342,36 +481,46 @@
 
       function captureAndVerify() {
         if (!video.videoWidth || !video.videoHeight) {
-          showStatus("Kamera belum siap, mohon tunggu sejenak...", true);
+          showStatus("Kamera belum siap, mohon tunggu...", true);
           return;
         }
 
+        playSFX('scan');
+
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        const context = canvas.getContext("2d");
-        context.translate(canvas.width, 0);
-        context.scale(-1, 1);
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const ctx = canvas.getContext("2d");
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         stopCamera();
-        scanFrame.classList.remove("hidden");
         resultImage.src = processingImage.src;
         resultImage.alt = processingImage.alt;
         resultImage.classList.remove("hidden");
-        
-        showStatus("Menganalisis fitur wajah... 🔍");
+
+        showStatus("MEMPROSES KALKULASI BIOMETRIK... ⚡");
         mainButton.disabled = true;
-        mainButton.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i><span>Memproses...</span>';
+        mainButton.innerHTML = '<i class="fa-solid fa-atom animate-spin"></i><span>SCANNING BIOMETRICS...</span>';
         state = "processing";
-        updateStepUI("step-result");
+        setStepUI(3);
 
         window.setTimeout(() => {
-          scanFrame.classList.add("hidden");
+          scanHud.classList.add("hidden");
           const chosen = resultChoices[Math.floor(Math.random() * resultChoices.length)];
           resultImage.src = chosen.src;
           resultImage.alt = chosen.alt;
           hideStatus();
-          
+
+          playSFX('success');
+
+          // Reveal Dynamic Random Metrics
+          resultStats.classList.remove("hidden");
+          setTimeout(() => {
+            barAura.style.width = Math.floor(Math.random() * 40 + 60) + "%";
+            barCharm.style.width = Math.floor(Math.random() * 30 + 70) + "%";
+          }, 100);
+
           mainButton.classList.add("hidden");
           resetButton.classList.remove("hidden");
           state = "result";
@@ -379,29 +528,30 @@
       }
 
       function reset() {
+        playSFX('beep');
         stopCamera();
         canvas.width = 0;
         canvas.height = 0;
         resultImage.removeAttribute("src");
         resultImage.classList.add("hidden");
         cameraEmpty.classList.remove("hidden");
-        scanFrame.classList.add("hidden");
+        scanHud.classList.add("hidden");
+        resultStats.classList.add("hidden");
+        barAura.style.width = "0%";
+        barCharm.style.width = "0%";
         hideStatus();
 
         resetButton.classList.add("hidden");
         mainButton.classList.remove("hidden");
         mainButton.disabled = false;
-        mainButton.innerHTML = '<i class="fa-solid fa-power-off"></i><span>Aktifkan Kamera</span>';
+        mainButton.innerHTML = '<i class="fa-solid fa-power-off"></i><span>START CAMERA SCAN</span>';
         state = "idle";
-        updateStepUI("step-camera");
+        setStepUI(1);
       }
 
       mainButton.addEventListener("click", () => {
-        if (state === "ready") {
-          captureAndVerify();
-        } else if (state === "idle") {
-          startCamera();
-        }
+        if (state === "ready") captureAndVerify();
+        else if (state === "idle") startCamera();
       });
 
       resetButton.addEventListener("click", reset);
