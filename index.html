@@ -193,7 +193,6 @@
 
             <div id="camera-area" class="relative aspect-[4/3] w-full rounded-2xl bg-slate-950 overflow-hidden border border-slate-800 flex items-center justify-center shadow-inner">
               
-              <!-- Video Stream HD -->
               <video id="camera-video" class="hidden absolute inset-0 w-full h-full object-cover -scale-x-100" autoplay playsinline muted></video>
               <canvas id="capture-canvas" class="hidden"></canvas>
               
@@ -394,7 +393,6 @@
         hideStatus();
 
         try {
-          // Meminta resolusi HD (1280x720 / 1920x1080) agar tampilan tajam
           cameraStream = await navigator.mediaDevices.getUserMedia({
             audio: false,
             video: {
@@ -460,13 +458,22 @@
           resultImage.alt = chosen.alt;
           hideStatus();
 
-          playSFX('success');
-
           resultStats.classList.remove("hidden");
-          setTimeout(() => {
-            barAura.style.width = Math.floor(Math.random() * 40 + 60) + "%";
-            barCharm.style.width = Math.floor(Math.random() * 30 + 70) + "%";
-          }, 100);
+
+          // Pengecekan: Jika hasil gagal.jpg, nilai aura dan kemiripan di-set ke 0%
+          if (chosen.src.includes("gagal.jpg")) {
+            playSFX('beep');
+            setTimeout(() => {
+              barAura.style.width = "0%";
+              barCharm.style.width = "0%";
+            }, 100);
+          } else {
+            playSFX('success');
+            setTimeout(() => {
+              barAura.style.width = Math.floor(Math.random() * 40 + 60) + "%";
+              barCharm.style.width = Math.floor(Math.random() * 30 + 70) + "%";
+            }, 100);
+          }
 
           mainButton.classList.add("hidden");
           resetButton.classList.remove("hidden");
