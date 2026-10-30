@@ -99,7 +99,6 @@
         opacity: 0.8;
       }
 
-      /* Scanline Screen Overlay Effect */
       .scanline-overlay {
         background: linear-gradient(
           to bottom,
@@ -114,13 +113,11 @@
   </head>
   <body class="text-slate-100 min-h-screen flex flex-col justify-between font-sans antialiased selection:bg-cyber-neon selection:text-slate-950 overflow-x-hidden">
 
-    <!-- Glowing Background Ambient Spheres -->
     <div class="fixed top-20 left-1/4 w-96 h-96 bg-cyber-neon/10 rounded-full blur-[120px] pointer-events-none animate-pulse-glow"></div>
     <div class="fixed bottom-10 right-1/4 w-96 h-96 bg-cyber-purple/10 rounded-full blur-[120px] pointer-events-none animate-pulse-glow" style="animation-delay: 1s;"></div>
 
     <div class="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-grow flex flex-col justify-between relative z-10">
       
-      <!-- Top Cyber Navigation Header -->
       <header class="flex items-center justify-between pb-6 border-b border-slate-800/80">
         <div class="flex items-center gap-3">
           <div class="relative w-11 h-11 rounded-2xl bg-slate-900 border border-cyber-neon/40 flex items-center justify-center text-cyber-neon shadow-[0_0_15px_rgba(0,255,204,0.3)] animate-float">
@@ -138,17 +135,14 @@
           </div>
         </div>
 
-        <!-- Mute Sound Toggle Button -->
         <button id="sound-toggle" onclick="toggleAudio()" class="px-3 py-1.5 rounded-xl glass-hud text-slate-300 text-xs font-mono flex items-center gap-2 hover:border-cyber-neon transition-all">
           <i id="sound-icon" class="fa-solid fa-volume-high text-cyber-neon"></i>
           <span id="sound-text" class="hidden sm:inline">SFX: ON</span>
         </button>
       </header>
 
-      <!-- Main Interactive Content Grid -->
       <main class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-8 my-auto">
         
-        <!-- Left Panel: Hero Banner & Controls -->
         <section class="lg:col-span-5 space-y-6">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-cyber-neon/30 text-cyber-neon text-xs font-mono shadow-[0_0_10px_rgba(0,255,204,0.15)]">
             <i class="fa-solid fa-circle-dot animate-pulse"></i> AI SCANNER READY
@@ -162,10 +156,9 @@
           </h1>
 
           <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-            Sistem pemindai ekspresi dan visual acak secara otomatis. Arahkan posisi wajah ke kamera untuk memulai pemindaian biomeatrik.
+            Sistem pemindai cek wajah mu wok seberapa mirip
           </p>
 
-          <!-- Interactive Metric HUD Cards -->
           <div class="grid grid-cols-3 gap-3 pt-2">
             <div class="glass-hud p-3 rounded-2xl border-slate-800 text-center">
               <span class="block text-[10px] text-slate-400 font-mono uppercase">Akurasi</span>
@@ -173,15 +166,14 @@
             </div>
             <div class="glass-hud p-3 rounded-2xl border-slate-800 text-center">
               <span class="block text-[10px] text-slate-400 font-mono uppercase">Latency</span>
-              <span class="text-lg font-bold font-mono text-cyber-purple">12ms</span>
+              <span class="text-lg font-bold font-mono text-cyber-purple">10ms</span>
             </div>
             <div class="glass-hud p-3 rounded-2xl border-slate-800 text-center">
               <span class="block text-[10px] text-slate-400 font-mono uppercase">FPS</span>
-              <span class="text-lg font-bold font-mono text-cyber-accent">60.0</span>
+              <span id="fps-val" class="text-lg font-bold font-mono text-cyber-accent">60.0</span>
             </div>
           </div>
 
-          <!-- Progress Step Timeline -->
           <div class="pt-4 flex items-center justify-between font-mono text-xs text-slate-400">
             <div id="step-1" class="flex items-center gap-2 text-cyber-neon font-bold">
               <span class="w-6 h-6 rounded-lg bg-cyber-neon/20 border border-cyber-neon flex items-center justify-center text-xs">1</span>
@@ -200,11 +192,9 @@
           </div>
         </section>
 
-        <!-- Right Panel: Futuristic Camera Viewfinder Card -->
         <section class="lg:col-span-7">
           <div class="glass-hud p-4 sm:p-6 rounded-3xl glow-border relative overflow-hidden">
             
-            <!-- Viewfinder Top Bar -->
             <div class="flex items-center justify-between pb-3 px-1 font-mono text-xs">
               <div class="flex items-center gap-2 text-slate-300">
                 <i class="fa-solid fa-crosshairs text-cyber-neon"></i>
@@ -216,20 +206,15 @@
               </div>
             </div>
 
-            <!-- Main Viewfinder Window -->
             <div id="camera-area" class="relative aspect-[4/3] w-full rounded-2xl bg-slate-950 overflow-hidden border border-slate-800 flex items-center justify-center shadow-inner">
               
-              <!-- Video Stream -->
               <video id="camera-video" class="hidden absolute inset-0 w-full h-full object-cover -scale-x-100" autoplay playsinline muted></video>
               <canvas id="capture-canvas" class="hidden"></canvas>
               
-              <!-- Result / Output Image -->
               <img id="result-image" class="hidden absolute inset-0 w-full h-full object-contain bg-slate-950 z-10" alt="Hasil Scan">
 
-              <!-- Scanline Screen Effect -->
               <div class="scanline-overlay absolute inset-0 pointer-events-none z-20 opacity-40"></div>
 
-              <!-- Idle / Empty State Layout -->
               <div id="camera-empty" class="text-center p-6 space-y-4 z-10">
                 <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
                   <div class="absolute inset-0 rounded-full border-2 border-dashed border-cyber-neon/40 animate-spin-slow"></div>
@@ -240,34 +225,28 @@
                 <div class="space-y-1">
                   <h3 class="text-white font-bold text-base font-mono">STANDBY MODE</h3>
                   <p class="text-slate-400 text-xs max-w-xs mx-auto">
-                    Aktifkan izin kamera untuk memulai kalkulasi biomeatrik secara otomatis.
+                    Aktifkan izin kamera untuk memulai kalkulasi biometrik secara otomatis.
                   </p>
                 </div>
               </div>
 
-              <!-- Cyber Scan HUD Overlay -->
               <div id="scan-hud" class="hidden absolute inset-0 pointer-events-none z-30">
-                <!-- Rotating Ring Center Overlay -->
                 <div class="absolute inset-0 flex items-center justify-center">
                   <div class="w-56 h-56 rounded-full border border-cyber-neon/30 animate-spin-slow flex items-center justify-center">
                     <div class="w-48 h-48 rounded-full border border-dashed border-cyber-purple/50 animate-spin-reverse"></div>
                   </div>
                 </div>
 
-                <!-- Biometric Target Box -->
                 <div class="absolute inset-x-12 inset-y-8 border border-cyber-neon/40 rounded-2xl">
-                  <!-- HUD Corner Brackets -->
                   <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyber-neon -mt-1 -ml-1"></div>
                   <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyber-neon -mt-1 -mr-1"></div>
                   <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyber-neon -mb-1 -ml-1"></div>
                   <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyber-neon -mb-1 -mr-1"></div>
 
-                  <!-- Scanning Laser Bar -->
                   <div class="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyber-neon to-transparent shadow-[0_0_15px_#00ffcc] animate-scan-laser"></div>
                 </div>
 
-                <!-- Telemetry HUD Text Overlay -->
-                <div class="absolute top-4 left-4 font-mono text-[10px] text-cyber-neon bg-slate-950/80 px-2 py-1 rounded border border-cyber-neon/30">
+                <div id="fps-hud" class="absolute top-4 left-4 font-mono text-[10px] text-cyber-neon bg-slate-950/80 px-2 py-1 rounded border border-cyber-neon/30">
                   REC // 60FPS
                 </div>
                 <div class="absolute bottom-4 right-4 font-mono text-[10px] text-cyber-purple bg-slate-950/80 px-2 py-1 rounded border border-cyber-purple/30">
@@ -275,11 +254,10 @@
                 </div>
               </div>
 
-              <!-- Status Notification Toast Banner -->
               <div id="camera-status" class="hidden absolute bottom-4 left-4 right-4 z-40 p-3 rounded-xl glass-hud font-mono text-xs text-center border border-amber-500/40 text-amber-200 backdrop-blur-md"></div>
             </div>
 
-            <!-- Dynamic Result Metrics Widget (Revealed after scan) -->
+            <!-- Dynamic Result Metrics Widget -->
             <div id="result-stats" class="hidden mt-4 p-4 rounded-2xl glass-hud border-cyber-neon/30 grid grid-cols-2 gap-3 font-mono text-xs">
               <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
                 <span class="text-slate-400 block mb-1">AURA VIBES</span>
@@ -288,24 +266,30 @@
                 </div>
               </div>
               <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
-                <span class="text-slate-400 block mb-1">KETAMPANAN / KECANTIKAN</span>
+                <span class="text-slate-400 block mb-1">KEMIRIPAN</span>
                 <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
                   <div id="bar-charm" class="bg-cyber-purple h-full transition-all duration-1000" style="width: 0%"></div>
                 </div>
               </div>
             </div>
 
-            <!-- Primary Action Buttons -->
+            <!-- Action Buttons -->
             <div class="pt-4 space-y-2">
               <button id="main-button" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-cyber-neon via-emerald-400 to-cyber-accent hover:opacity-90 text-slate-950 font-black font-mono text-sm tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_25px_rgba(0,255,204,0.3)] active:scale-[0.98]">
                 <i class="fa-solid fa-power-off"></i>
                 <span>START CAMERA SCAN</span>
               </button>
 
-              <button id="reset-button" type="button" class="hidden w-full py-3.5 px-6 rounded-2xl glass-hud hover:bg-slate-800/80 text-slate-200 font-bold font-mono text-xs tracking-wider flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
-                <i class="fa-solid fa-rotate-right text-cyber-neon"></i>
-                <span>SCAN REPEAT / RESET</span>
-              </button>
+              <div id="result-actions" class="hidden flex gap-2">
+                <button id="share-button" type="button" onclick="shareResult()" class="flex-1 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:opacity-90 text-slate-950 font-black font-mono text-xs tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] active:scale-[0.98]">
+                  <i class="fa-brands fa-whatsapp text-base"></i>
+                  <span>SHARE HASIL</span>
+                </button>
+                <button id="reset-button" type="button" class="flex-1 py-3.5 px-4 rounded-2xl glass-hud hover:bg-slate-800/80 text-slate-200 font-bold font-mono text-xs tracking-wider flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                  <i class="fa-solid fa-rotate-right text-cyber-neon"></i>
+                  <span>RESET</span>
+                </button>
+              </div>
             </div>
 
           </div>
@@ -313,7 +297,6 @@
 
       </main>
 
-      <!-- Cyber Footer -->
       <footer class="pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-slate-500">
         <p>© 2026 CEK.MUKA AI — Simulated Biometrics. Fun Purpose Only.</p>
         <div class="flex items-center gap-3">
@@ -323,7 +306,6 @@
 
     </div>
 
-    <!-- Interactive Script & Web Audio SFX Engine -->
     <script>
       const video = document.querySelector("#camera-video");
       const canvas = document.querySelector("#capture-canvas");
@@ -333,6 +315,7 @@
       const scanHud = document.querySelector("#scan-hud");
       const mainButton = document.querySelector("#main-button");
       const resetButton = document.querySelector("#reset-button");
+      const resultActions = document.querySelector("#result-actions");
       const statusDot = document.querySelector("#status-dot");
       const statusText = document.querySelector("#status-text");
       const resultStats = document.querySelector("#result-stats");
@@ -351,7 +334,6 @@
       let audioEnabled = true;
       let audioCtx = null;
 
-      // Web Audio Synthesizer SFX Engine (No External Audio Files Needed)
       function playSFX(type) {
         if (!audioEnabled) return;
         try {
@@ -382,9 +364,9 @@
             osc.stop(now + 1.2);
           } else if (type === 'success') {
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(523.25, now); // C5
-            osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
-            osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+            osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.1);
+            osc.frequency.setValueAtTime(783.99, now + 0.2);
             gain.gain.setValueAtTime(0.1, now);
             gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
             osc.start(now);
@@ -514,7 +496,6 @@
 
           playSFX('success');
 
-          // Reveal Dynamic Random Metrics
           resultStats.classList.remove("hidden");
           setTimeout(() => {
             barAura.style.width = Math.floor(Math.random() * 40 + 60) + "%";
@@ -522,7 +503,8 @@
           }, 100);
 
           mainButton.classList.add("hidden");
-          resetButton.classList.remove("hidden");
+          resultActions.classList.remove("hidden");
+          resultActions.classList.add("flex");
           state = "result";
         }, 1800);
       }
@@ -541,12 +523,31 @@
         barCharm.style.width = "0%";
         hideStatus();
 
-        resetButton.classList.add("hidden");
+        resultActions.classList.add("hidden");
+        resultActions.classList.remove("flex");
         mainButton.classList.remove("hidden");
         mainButton.disabled = false;
         mainButton.innerHTML = '<i class="fa-solid fa-power-off"></i><span>START CAMERA SCAN</span>';
         state = "idle";
         setStepUI(1);
+      }
+
+      function shareResult() {
+        playSFX('beep');
+        const aura = barAura.style.width || "85%";
+        const charm = barCharm.style.width || "90%";
+        const shareText = `🔥 Hasil Analisis Cek Wajahku di CEK.MUKA AI!\n\n✨ Aura Vibes: ${aura}\n🧬 Kemiripan: ${charm}\n\nCoba cek wajahmu di sini: ${window.location.href}`;
+
+        if (navigator.share) {
+          navigator.share({
+            title: 'CEK.MUKA AI Result',
+            text: shareText,
+            url: window.location.href,
+          }).catch((err) => console.log('Share error/canceled', err));
+        } else {
+          const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+          window.open(waUrl, '_blank');
+        }
       }
 
       mainButton.addEventListener("click", () => {
@@ -556,6 +557,25 @@
 
       resetButton.addEventListener("click", reset);
       window.addEventListener("pagehide", stopCamera);
+
+      // --- FPS COUNTER REALTIME ENGINE ---
+      let lastTime = performance.now();
+      let frameCount = 0;
+      const fpsValEl = document.getElementById("fps-val");
+      const fpsHudEl = document.getElementById("fps-hud");
+
+      function calculateFPS(now) {
+        frameCount++;
+        if (now - lastTime >= 400) {
+          const currentFps = ((frameCount * 1000) / (now - lastTime)).toFixed(1);
+          if (fpsValEl) fpsValEl.textContent = currentFps;
+          if (fpsHudEl) fpsHudEl.textContent = `REC // ${Math.round(currentFps)}FPS`;
+          frameCount = 0;
+          lastTime = now;
+        }
+        requestAnimationFrame(calculateFPS);
+      }
+      requestAnimationFrame(calculateFPS);
     </script>
   </body>
 </html>
