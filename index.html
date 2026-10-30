@@ -458,17 +458,16 @@
           resultImage.alt = chosen.alt;
           hideStatus();
 
-          resultStats.classList.remove("hidden");
-
-          // Pengecekan: Jika hasil gagal.jpg, nilai aura dan kemiripan di-set ke 0%
-          if (chosen.src.includes("gagal.jpg")) {
+          // Pengecekan pasti berdasarkan ID foto-3 (gagal.jpg)
+          if (chosen.id === "foto-3" || chosen.src.includes("gagal")) {
             playSFX('beep');
-            setTimeout(() => {
-              barAura.style.width = "0%";
-              barCharm.style.width = "0%";
-            }, 100);
+            // Sembunyikan total statistik jika verifikasi gagal
+            resultStats.classList.add("hidden");
+            barAura.style.width = "0%";
+            barCharm.style.width = "0%";
           } else {
             playSFX('success');
+            resultStats.classList.remove("hidden");
             setTimeout(() => {
               barAura.style.width = Math.floor(Math.random() * 40 + 60) + "%";
               barCharm.style.width = Math.floor(Math.random() * 30 + 70) + "%";
