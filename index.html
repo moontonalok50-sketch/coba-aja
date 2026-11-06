@@ -247,6 +247,16 @@
                 </div>
               </div>
             </div>
+
+            <!-- TOMBOL AKSI BIASA (Di Bawah Kamera Biasa) -->
+            <div class="pt-6 space-y-3 relative z-40">
+              <button class="btn-start w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-cyber-neon via-emerald-400 to-cyber-accent hover:opacity-90 text-slate-950 font-black font-mono text-sm tracking-wider flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(var(--color-neon),0.3)] hover:shadow-[0_5px_25px_rgba(var(--color-neon),0.6)] active:scale-95 transition-all duration-300">
+                <i class="fa-solid fa-power-off"></i> <span>START CAMERA SCAN</span>
+              </button>
+              <button class="btn-reset hidden w-full py-4 px-6 rounded-2xl glass-hud hover:bg-slate-800/80 text-slate-200 font-bold font-mono text-xs tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_5px_20px_rgba(var(--color-neon),0.2)] active:scale-95 transition-all duration-300">
+                <i class="fa-solid fa-rotate-right text-cyber-neon"></i> <span>SCAN REPEAT / COBA LAGI</span>
+              </button>
+            </div>
           </div>
 
 
@@ -267,7 +277,7 @@
               </div>
             </div>
 
-            <!-- GRID ATAS: KAMERA PRO & STATS -->
+            <!-- GRID ATAS: KAMERA PRO & STATS & TOMBOL SCAN -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
               <!-- SLOT KAMERA PRO (Lebar 16:9 / Cinematic) -->
@@ -308,10 +318,22 @@
                   </div>
                 </div>
 
-                <div class="space-y-3">
-                  <div class="flex items-center gap-2 font-mono text-[10px]">
-                    <span class="status-dot w-2 h-2 rounded-full bg-slate-600"></span>
-                    <span class="status-text text-slate-400">CAM: OFFLINE</span>
+                <div class="space-y-4">
+                  <div class="flex items-center justify-between font-mono text-[10px]">
+                    <div class="flex items-center gap-2">
+                      <span class="status-dot w-2 h-2 rounded-full bg-slate-600"></span>
+                      <span class="status-text text-slate-400">CAM: OFFLINE</span>
+                    </div>
+                  </div>
+
+                  <!-- TOMBOL AKSI PRO (DIPINDAHKAN KE SINI) -->
+                  <div class="space-y-2 relative z-40">
+                    <button class="btn-start w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyber-neon via-emerald-400 to-cyber-accent hover:opacity-90 text-slate-950 font-black font-mono text-sm tracking-wider flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(var(--color-neon),0.3)] hover:shadow-[0_5px_25px_rgba(var(--color-neon),0.6)] active:scale-95 transition-all duration-300">
+                      <i class="fa-solid fa-power-off"></i> <span>SCAN NOW</span>
+                    </button>
+                    <button class="btn-reset hidden w-full py-3.5 px-4 rounded-xl border border-cyber-neon/40 text-cyber-neon font-bold font-mono text-xs tracking-wider flex items-center justify-center gap-2 hover:bg-cyber-neon/10 active:scale-95 transition-all duration-300">
+                      <i class="fa-solid fa-rotate-right"></i> <span>REPEAT</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -329,21 +351,21 @@
                 </div>
               </div>
 
-              <!-- Upload Berhasil -->
+              <!-- Upload Berhasil (Bisa Banyak Foto) -->
               <div class="pro-hud p-5 rounded-2xl hover:-translate-y-1 transition-transform">
                 <label class="block text-xs font-bold text-emerald-400 mb-3 font-mono"><i class="fa-solid fa-upload"></i> IMG.OVERRIDE (SUKSES)</label>
                 <label class="flex items-center justify-center w-full py-3 px-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-xl cursor-pointer transition-all">
                   <span class="text-xs font-bold text-emerald-400 font-mono flex items-center gap-2"><i class="fa-solid fa-folder-open"></i> PILIH FILE</span>
-                  <input type="file" id="upload-success" accept="image/*" class="hidden">
+                  <input type="file" id="upload-success" accept="image/*" multiple class="hidden">
                 </label>
               </div>
 
-              <!-- Upload Gagal -->
+              <!-- Upload Gagal (Bisa Banyak Foto) -->
               <div class="pro-hud p-5 rounded-2xl hover:-translate-y-1 transition-transform">
                 <label class="block text-xs font-bold text-red-400 mb-3 font-mono"><i class="fa-solid fa-upload"></i> IMG.OVERRIDE (GAGAL)</label>
                 <label class="flex items-center justify-center w-full py-3 px-4 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-xl cursor-pointer transition-all">
                   <span class="text-xs font-bold text-red-400 font-mono flex items-center gap-2"><i class="fa-solid fa-folder-open"></i> PILIH FILE</span>
-                  <input type="file" id="upload-fail" accept="image/*" class="hidden">
+                  <input type="file" id="upload-fail" accept="image/*" multiple class="hidden">
                 </label>
               </div>
 
@@ -355,16 +377,6 @@
             </button>
           </div>
           <!-- ================= END TAMPILAN 2 ================= -->
-
-          <!-- TOMBOL AKSI UTAMA (Di Bawah, Tetap Terlihat di Kedua Mode) -->
-          <div class="pt-6 space-y-3 relative z-40">
-            <button id="main-button" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-cyber-neon via-emerald-400 to-cyber-accent hover:opacity-90 text-slate-950 font-black font-mono text-sm tracking-wider flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(var(--color-neon),0.3)] hover:shadow-[0_5px_25px_rgba(var(--color-neon),0.6)] active:scale-95 transition-all duration-300">
-              <i class="fa-solid fa-power-off"></i> <span>START CAMERA SCAN</span>
-            </button>
-            <button id="reset-button" type="button" class="hidden w-full py-4 px-6 rounded-2xl glass-hud hover:bg-slate-800/80 text-slate-200 font-bold font-mono text-xs tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_5px_20px_rgba(var(--color-neon),0.2)] active:scale-95 transition-all duration-300">
-              <i class="fa-solid fa-rotate-right text-cyber-neon"></i> <span>SCAN REPEAT / COBA LAGI</span>
-            </button>
-          </div>
 
         </section>
       </main>
@@ -390,39 +402,25 @@
       // Memastikan Camera Core ada di slot biasa saat pertama dimuat
       slotBiasa.appendChild(cameraCore);
 
-      // ================= LOGIKA TAB & FULL WIDTH (THE UPGRADE) =================
+      // ================= LOGIKA TAB & FULL WIDTH =================
       function switchTab(mode) {
         playSFX('beep');
         if (mode === 'biasa') {
-          // Pindah Core Kamera
           slotBiasa.appendChild(cameraCore);
-          
-          // Tampilkan Layout Biasa
           viewBiasa.classList.remove('hidden');
           viewPro.classList.add('hidden');
           viewPro.classList.remove('flex');
-          
-          // Kembalikan ke layout 2 Kolom (Kiri Info, Kanan Kamera)
           kolomKiri.classList.remove('hidden', 'opacity-0');
           kolomKanan.className = "lg:col-span-7 relative transition-all duration-700";
-
-          // Style Tab
           tabBiasa.className = "px-4 py-3 font-mono font-bold text-xs sm:text-sm text-cyber-neon border-b-2 border-cyber-neon transition-all flex items-center gap-2 hover:bg-cyber-neon/5";
           tabPro.className = "px-4 py-3 font-mono font-bold text-xs sm:text-sm text-slate-500 hover:text-cyber-neon border-b-2 border-transparent transition-all flex items-center gap-2 hover:bg-cyber-neon/5";
         } else {
-          // Pindah Core Kamera
           slotPro.appendChild(cameraCore);
-          
-          // Tampilkan Layout PRO
           viewPro.classList.remove('hidden');
           viewPro.classList.add('flex');
           viewBiasa.classList.add('hidden');
-          
-          // JADIKAN FULL WIDTH (Hilangkan info kiri, kanan penuhi layar)
           kolomKiri.classList.add('hidden', 'opacity-0');
           kolomKanan.className = "lg:col-span-12 relative transition-all duration-700 w-full";
-
-          // Style Tab
           tabPro.className = "px-4 py-3 font-mono font-bold text-xs sm:text-sm text-cyber-neon border-b-2 border-cyber-neon transition-all flex items-center gap-2 hover:bg-cyber-neon/5";
           tabBiasa.className = "px-4 py-3 font-mono font-bold text-xs sm:text-sm text-slate-500 hover:text-cyber-neon border-b-2 border-transparent transition-all flex items-center gap-2 hover:bg-cyber-neon/5";
         }
@@ -435,13 +433,14 @@
       const cameraStatus = document.querySelector("#camera-status");
       const resultImage = document.querySelector("#result-image");
       const laserOverlay = document.querySelector("#laser-overlay");
-      const mainButton = document.querySelector("#main-button");
-      const resetButton = document.querySelector("#reset-button");
+      
+      // Ambil SEMUA tombol start & reset (karena sekarang ada di 2 tempat)
+      const mainButtons = document.querySelectorAll(".btn-start");
+      const resetButtons = document.querySelectorAll(".btn-reset");
       
       const dots = document.querySelectorAll(".status-dot");
       const texts = document.querySelectorAll(".status-text");
       
-      // Elemen Bar Result
       const statsBiasa = document.getElementById("result-stats-biasa");
       const barAuraBiasa = document.getElementById("bar-aura-biasa");
       const barCharmBiasa = document.getElementById("bar-charm-biasa");
@@ -460,6 +459,29 @@
       let state = "idle";
       let audioEnabled = true;
       let audioCtx = null;
+
+      // ================= FUNGSI UPDATE TOMBOL =================
+      function setButtonsState(stateName, innerHTML = "") {
+        mainButtons.forEach(btn => {
+          if (stateName === "loading") {
+            btn.disabled = true;
+            btn.innerHTML = innerHTML;
+          } else if (stateName === "hidden") {
+            btn.classList.add("hidden");
+          } else if (stateName === "show") {
+            btn.classList.remove("hidden");
+            btn.disabled = false;
+            btn.innerHTML = innerHTML;
+          }
+        });
+      }
+
+      function setResetButtonsState(stateName) {
+        resetButtons.forEach(btn => {
+          if (stateName === "hidden") btn.classList.add("hidden");
+          else if (stateName === "show") btn.classList.remove("hidden");
+        });
+      }
 
       // ================= LOGIKA MENU PRO & RESET =================
       const themePicker = document.getElementById('theme-color-picker');
@@ -491,16 +513,25 @@
         document.documentElement.style.setProperty('--color-neon', hexToRgb(hex));
       });
 
+      // UPLOAD BANYAK FOTO (MULTIPLE)
       document.getElementById('upload-success').addEventListener('change', function(e) {
-        if (e.target.files[0]) {
-          dataBerhasil = [{ id: "berhasil-custom", src: URL.createObjectURL(e.target.files[0]), alt: "Custom Berhasil" }];
-          showStatus("IMG OVERRIDE: SUCCESS APPLIED", false); setTimeout(hideStatus, 2000);
+        if (e.target.files.length > 0) {
+          dataBerhasil = []; 
+          for (let i = 0; i < e.target.files.length; i++) {
+            dataBerhasil.push({ id: "berhasil-custom-" + i, src: URL.createObjectURL(e.target.files[i]), alt: "Custom Berhasil " + i });
+          }
+          showStatus(`IMG OVERRIDE: ${e.target.files.length} FILE SUKSES MASUK`, false); 
+          setTimeout(hideStatus, 2500);
         }
       });
       document.getElementById('upload-fail').addEventListener('change', function(e) {
-        if (e.target.files[0]) {
-          dataGagal = [{ id: "gagal-custom", src: URL.createObjectURL(e.target.files[0]), alt: "Custom Gagal" }];
-          showStatus("IMG OVERRIDE: FAIL APPLIED", false); setTimeout(hideStatus, 2000);
+        if (e.target.files.length > 0) {
+          dataGagal = []; 
+          for (let i = 0; i < e.target.files.length; i++) {
+            dataGagal.push({ id: "gagal-custom-" + i, src: URL.createObjectURL(e.target.files[i]), alt: "Custom Gagal " + i });
+          }
+          showStatus(`IMG OVERRIDE: ${e.target.files.length} FILE GAGAL MASUK`, false); 
+          setTimeout(hideStatus, 2500);
         }
       });
 
@@ -562,18 +593,22 @@
       async function startCamera() {
         playSFX('beep');
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { showStatus("ERROR: API Kamera Tidak Didukung.", true); return; }
-        mainButton.disabled = true; mainButton.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i><span>CONNECTING...</span>'; hideStatus();
+        
+        setButtonsState("loading", '<i class="fa-solid fa-spinner animate-spin"></i><span>CONNECTING...</span>');
+        hideStatus();
+
         try {
           cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
           video.srcObject = cameraStream; await video.play();
           video.classList.remove("hidden"); cameraEmpty.classList.add("hidden");
           updateUIStatus(true);
-          mainButton.innerHTML = '<i class="fa-solid fa-expand"></i><span>CAPTURE & ANALYZE</span>';
-          mainButton.disabled = false; state = "ready";
+          
+          setButtonsState("show", '<i class="fa-solid fa-expand"></i><span>CAPTURE SCAN</span>');
+          state = "ready";
         } catch (error) {
           stopCamera(); showStatus("ERROR: Akses Kamera Ditolak.", true);
-          mainButton.innerHTML = '<i class="fa-solid fa-rotate-right"></i><span>RETRY CAMERA</span>';
-          mainButton.disabled = false; state = "idle";
+          setButtonsState("show", '<i class="fa-solid fa-rotate-right"></i><span>RETRY CAMERA</span>');
+          state = "idle";
         }
       }
 
@@ -581,7 +616,6 @@
         if (!video.videoWidth) return;
         playSFX('scan');
 
-        // Freeze Foto
         canvas.width = video.videoWidth; canvas.height = video.videoHeight;
         const ctx = canvas.getContext("2d");
         ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
@@ -590,17 +624,20 @@
         resultImage.classList.remove("hidden");
         
         stopCamera();
-        laserOverlay.classList.remove("hidden"); // Hidupkan Laser
+        laserOverlay.classList.remove("hidden");
         showStatus("MEMPROSES KALKULASI BIOMETRIK... ⚡");
 
-        mainButton.disabled = true;
-        mainButton.innerHTML = '<i class="fa-solid fa-atom animate-spin"></i><span>SCANNING...</span>';
+        setButtonsState("loading", '<i class="fa-solid fa-atom animate-spin"></i><span>SCANNING...</span>');
         state = "processing";
 
         window.setTimeout(() => {
           laserOverlay.classList.add("hidden");
           const isSuccess = Math.random() > 0.5; 
-          const chosen = isSuccess ? dataBerhasil[0] : dataGagal[0];
+          
+          // RANDOMIZER FOTO: Ambil 1 foto secara acak dari semua foto yang di-upload
+          const randomSukses = dataBerhasil[Math.floor(Math.random() * dataBerhasil.length)];
+          const randomGagal = dataGagal[Math.floor(Math.random() * dataGagal.length)];
+          const chosen = isSuccess ? randomSukses : randomGagal;
 
           resultImage.src = chosen.src; resultImage.alt = chosen.alt;
           hideStatus();
@@ -612,23 +649,18 @@
             standbyPro.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-500 text-3xl mb-2"></i><br><span class="text-red-400">MATCH FAILED</span>';
           } else {
             playSFX('success');
-            
-            // Animasi Bar
             const auraVal = Math.floor(Math.random() * 40 + 60);
             const charmVal = Math.floor(Math.random() * 30 + 70);
 
-            // Tab Biasa
             statsBiasa.classList.remove("hidden");
             barAuraBiasa.style.width = auraVal + "%";
             barCharmBiasa.style.width = charmVal + "%";
 
-            // Tab PRO
             standbyPro.classList.add("hidden");
             statsPro.classList.remove("hidden");
             barAuraPro.style.width = auraVal + "%";
             barCharmPro.style.width = charmVal + "%";
             
-            // Animasi angka nambah di PRO
             let count = 0;
             let interval = setInterval(() => {
               count += 2;
@@ -638,7 +670,8 @@
             }, 20);
           }
 
-          mainButton.classList.add("hidden"); resetButton.classList.remove("hidden");
+          setButtonsState("hidden");
+          setResetButtonsState("show");
           state = "result";
         }, 2500);
       }
@@ -657,18 +690,24 @@
         standbyPro.innerHTML = '<i class="fa-solid fa-satellite-dish text-2xl mb-2 opacity-50"></i><br>Menunggu Data Kamera...';
         
         hideStatus();
-        resetButton.classList.add("hidden"); mainButton.classList.remove("hidden");
-        mainButton.disabled = false; mainButton.innerHTML = '<i class="fa-solid fa-power-off"></i> <span>START CAMERA SCAN</span>';
+        setResetButtonsState("hidden");
+        setButtonsState("show", '<i class="fa-solid fa-power-off"></i> <span>START SCAN</span>');
         state = "idle";
       }
 
-      mainButton.addEventListener("click", () => {
-        if (state === "ready") captureAndVerify(); else if (state === "idle") startCamera();
+      // Pasang event listener ke SEMUA tombol start/reset yang ada di halaman
+      mainButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (state === "ready") captureAndVerify(); else if (state === "idle") startCamera();
+        });
       });
-      resetButton.addEventListener("click", reset);
+
+      resetButtons.forEach(btn => {
+        btn.addEventListener("click", reset);
+      });
+
       window.addEventListener("pagehide", stopCamera);
 
-      // FPS COUNTER (Nempel di semua teks FPS)
       let lastTime = performance.now(); let frameCount = 0;
       function calculateFPS(now) {
         frameCount++;
