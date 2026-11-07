@@ -13,9 +13,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Pustaka AI Deteksi Wajah (Face-API) -->
-    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
-
     <style>
       :root { --color-neon: 0 255 204; }
     </style>
@@ -87,7 +84,6 @@
         [ INITIATE REBOOT ]
       </button>
     </div>
-    <!-- ========================================================================= -->
 
     <!-- ================= MODAL INPUT PIN ================= -->
     <div id="pin-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/95 backdrop-blur-xl transition-all">
@@ -102,36 +98,49 @@
         </div>
       </div>
     </div>
-    <!-- =================================================== -->
 
     <!-- ================= MODAL CHEAT (RAHASIA) ================= -->
-    <div id="cheat-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-md transition-all">
-      <div class="pro-hud p-8 rounded-3xl w-[90%] max-w-sm border border-red-500/50 shadow-[0_0_50px_rgba(239,68,68,0.2)]">
+    <div id="cheat-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-md transition-all p-4">
+      <div class="pro-hud p-6 sm:p-8 rounded-3xl w-full max-w-sm border border-red-500/50 shadow-[0_0_50px_rgba(239,68,68,0.2)] max-h-[90vh] overflow-y-auto">
         <h3 class="text-red-500 font-black font-mono text-xl mb-2 text-center tracking-widest flex flex-col items-center gap-2">
           <i class="fa-solid fa-user-secret text-3xl"></i> ADMIN OVERRIDE
         </h3>
         <p class="text-slate-400 text-[10px] font-mono text-center mb-6">FORCE AI BIOMETRIC RESULTS</p>
         
         <div class="space-y-3 font-mono text-sm">
-          <button onclick="setCheat('success')" class="w-full py-4 rounded-xl bg-emerald-950/50 border border-emerald-500/50 text-emerald-400 hover:bg-emerald-900 hover:border-emerald-400 transition-all font-bold tracking-wider">
-            <i class="fa-solid fa-check-circle mr-2"></i> FORCE SUKSES (100%)
+          <button onclick="setCheat('success')" class="w-full py-3 rounded-xl bg-emerald-950/50 border border-emerald-500/50 text-emerald-400 hover:bg-emerald-900 hover:border-emerald-400 transition-all font-bold tracking-wider">
+            <i class="fa-solid fa-check-circle mr-2"></i> FORCE SUKSES
           </button>
-          <button onclick="setCheat('fail')" class="w-full py-4 rounded-xl bg-red-950/50 border border-red-500/50 text-red-400 hover:bg-red-900 hover:border-red-400 transition-all font-bold tracking-wider">
-            <i class="fa-solid fa-circle-xmark mr-2"></i> FORCE GAGAL (100%)
+          <button onclick="setCheat('fail')" class="w-full py-3 rounded-xl bg-red-950/50 border border-red-500/50 text-red-400 hover:bg-red-900 hover:border-red-400 transition-all font-bold tracking-wider">
+            <i class="fa-solid fa-circle-xmark mr-2"></i> FORCE GAGAL
           </button>
-          <button onclick="setCheat('random')" class="w-full py-4 rounded-xl bg-slate-800/50 border border-slate-600/50 text-slate-300 hover:bg-slate-700 hover:border-slate-500 transition-all font-bold tracking-wider">
+          <button onclick="setCheat('random')" class="w-full py-3 rounded-xl bg-slate-800/50 border border-slate-600/50 text-slate-300 hover:bg-slate-700 hover:border-slate-500 transition-all font-bold tracking-wider">
             <i class="fa-solid fa-dice mr-2"></i> NORMAL (RANDOM)
           </button>
         </div>
+
+        <!-- FITUR BARU: CUSTOM AI VOICE -->
+        <div class="mt-6 border-t border-slate-800 pt-4 space-y-3">
+          <p class="text-[10px] font-mono text-center text-cyber-neon font-bold tracking-widest"><i class="fa-solid fa-microphone-lines"></i> CUSTOM AI VOICE ROAST</p>
+          
+          <div>
+            <label class="text-[9px] text-emerald-400 font-mono mb-1 block uppercase">Teks Sukses (Kosongkan utk default):</label>
+            <input type="text" id="voice-success-input" placeholder="Akses diterima..." class="w-full bg-black border border-emerald-500/30 text-emerald-400 text-xs font-mono p-2 rounded-lg outline-none focus:border-emerald-400 focus:bg-slate-900 transition-all">
+          </div>
+          <div>
+            <label class="text-[9px] text-red-400 font-mono mb-1 block uppercase">Teks Gagal (Kosongkan utk default):</label>
+            <input type="text" id="voice-fail-input" placeholder="Ancaman keamanan..." class="w-full bg-black border border-red-500/30 text-red-400 text-xs font-mono p-2 rounded-lg outline-none focus:border-red-400 focus:bg-slate-900 transition-all">
+          </div>
+        </div>
+
         <div class="mt-6 text-center border-t border-slate-800 pt-4">
           <span id="cheat-status-text" class="text-xs font-mono font-bold text-slate-400">STATUS: NORMAL</span>
         </div>
         <button onclick="closeCheatModal()" class="mt-4 w-full py-3 rounded-xl glass-hud text-slate-400 text-xs font-bold hover:text-white hover:border-cyber-neon transition-all">
-          TUTUP PANEL
+          SIMPAN & TUTUP PANEL
         </button>
       </div>
     </div>
-    <!-- ========================================================= -->
 
     <!-- Ambient / Background -->
     <div id="ambient-1" class="fixed top-20 left-1/4 w-96 h-96 bg-cyber-neon/10 rounded-full blur-[120px] pointer-events-none animate-pulse-glow transition-all duration-1000"></div>
@@ -146,7 +155,6 @@
             <i class="fa-solid fa-shield-halved text-xl"></i>
           </div>
           <div>
-            <!-- TRIGGER CHEAT: Klik id="logo-trigger" 3 kali -->
             <button id="logo-trigger" class="flex items-center gap-2 text-left active:scale-95 transition-transform outline-none">
               <span class="font-black text-2xl tracking-wider font-mono bg-gradient-to-r from-cyber-neon via-white to-cyber-purple bg-clip-text text-transparent">CEK.MUKA</span>
               <span class="px-2 py-0.5 text-[9px] font-mono font-bold bg-cyber-danger/20 text-cyber-danger border border-cyber-danger/30 rounded"><i class="fa-solid fa-lock text-[8px]"></i> SECURE</span>
@@ -174,8 +182,8 @@
         
         <!-- KOLOM KIRI (INFO) -->
         <section id="kolom-kiri" class="lg:col-span-5 space-y-6 sticky top-8 transition-all duration-500 opacity-100 block">
-          <div id="ai-status-badge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-cyber-neon/30 text-cyber-neon text-xs font-mono shadow-[0_0_10px_rgba(var(--color-neon),0.15)]">
-            <i class="fa-solid fa-circle-notch animate-spin"></i> <span>LOADING AI CORE...</span>
+          <div id="ai-status-badge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-cyber-neon/30 text-emerald-400 text-xs font-mono shadow-[0_0_10px_rgba(16,185,129,0.15)]">
+            <i class="fa-solid fa-shield-check"></i> <span>SECURE ENGINE ACTIVE</span>
           </div>
           <h1 class="text-4xl sm:text-5xl font-black tracking-tight leading-none text-white">
             Analisis Wajah <br><span class="bg-gradient-to-r from-cyber-neon via-emerald-300 to-cyber-accent bg-clip-text text-transparent">Hologram Realtime</span>
@@ -199,26 +207,19 @@
 
         <!-- KOLOM KANAN -->
         <section id="kolom-kanan" class="lg:col-span-7 relative transition-all duration-700">
-          
-          <!-- ================= INTI KAMERA ================= -->
+          <!-- INTI KAMERA -->
           <div id="camera-core-wrapper" class="hidden">
             <div id="camera-core" class="absolute inset-0 w-full h-full bg-slate-950 flex flex-col items-center justify-center overflow-hidden rounded-3xl shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] border border-slate-800">
-              
               <video id="camera-video" class="hidden absolute w-full h-full object-contain transition-transform duration-200" autoplay playsinline muted></video>
               <canvas id="capture-canvas" class="hidden"></canvas>
               <img id="result-image" class="hidden absolute inset-0 w-full h-full object-contain z-10 transition-transform duration-200" alt="Hasil Scan">
 
-              <!-- FAKE ENCRYPTION TERMINAL -->
-              <div id="fake-terminal-log" class="hidden absolute inset-0 z-20 bg-slate-950/70 p-4 font-mono text-[10px] text-cyber-neon flex flex-col justify-end pointer-events-none">
-                 <!-- Teks akan ditambahkan oleh JS secara cepat -->
-              </div>
+              <div id="fake-terminal-log" class="hidden absolute inset-0 z-20 bg-slate-950/70 p-4 font-mono text-[10px] text-cyber-neon flex flex-col justify-end pointer-events-none"></div>
 
-              <!-- LASER SCANNER -->
               <div id="laser-overlay" class="hidden absolute inset-0 z-20 pointer-events-none overflow-hidden">
                 <div class="w-full h-1 bg-cyber-neon shadow-[0_0_25px_rgba(var(--color-neon),1)] absolute animate-scan-laser z-30"></div>
               </div>
 
-              <!-- KONTROL KAMERA -->
               <div id="camera-controls" class="hidden absolute bottom-4 z-50 flex items-center justify-center gap-4 bg-slate-900/80 backdrop-blur-md px-5 py-2 rounded-full border border-cyber-neon/40 shadow-lg">
                 <button id="btn-flip" class="text-slate-300 hover:text-cyber-neon transition-colors active:scale-90" title="Tukar Kamera"><i class="fa-solid fa-camera-rotate text-lg"></i></button>
                 <div class="h-6 w-px bg-slate-700"></div>
@@ -230,33 +231,23 @@
                 <span id="zoom-val" class="text-cyber-neon font-mono text-[10px] w-6 text-right font-bold">1.0x</span>
               </div>
 
-              <!-- STANDBY -->
               <div id="camera-empty" class="absolute inset-0 flex flex-col items-center justify-center p-6 space-y-4 z-10 bg-slate-950/80 backdrop-blur-sm">
                 <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
                   <div class="absolute inset-0 rounded-full border-2 border-dashed border-cyber-neon/40 animate-spin-slow"></div>
-                  <div class="w-14 h-14 rounded-full bg-slate-900 border border-cyber-neon/60 flex items-center justify-center text-cyber-neon text-2xl shadow-[0_0_20px_rgba(var(--color-neon),0.2)]">
-                    <i class="fa-solid fa-camera"></i>
-                  </div>
+                  <div class="w-14 h-14 rounded-full bg-slate-900 border border-cyber-neon/60 flex items-center justify-center text-cyber-neon text-2xl shadow-[0_0_20px_rgba(var(--color-neon),0.2)]"><i class="fa-solid fa-camera"></i></div>
                 </div>
                 <div class="text-center"><h3 class="text-white font-bold font-mono tracking-wider">STANDBY</h3></div>
               </div>
 
-              <!-- NOTIFIKASI ERROR/STATUS -->
               <div id="camera-status" class="hidden absolute top-4 left-4 right-4 z-40 p-3 rounded-xl bg-slate-900/90 backdrop-blur font-mono text-xs text-center border border-cyber-neon/40 text-cyber-neon font-bold transition-all duration-300"></div>
             </div>
           </div>
-          <!-- ======================================================================= -->
 
-
-          <!-- ================= TAMPILAN 1: SCANNER BIASA ================= -->
+          <!-- TAMPILAN 1: SCANNER BIASA -->
           <div id="view-biasa" class="glass-hud p-4 sm:p-6 rounded-3xl glow-border relative block space-y-4">
             <div class="flex items-center justify-between px-1 font-mono text-xs">
-              <div class="flex items-center gap-2 text-slate-300">
-                <i class="fa-solid fa-camera text-cyber-neon"></i> <span class="tracking-wider">SYS.VIEWFINDER</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="status-dot w-2.5 h-2.5 rounded-full bg-slate-600"></span><span class="status-text text-slate-400">OFFLINE</span>
-              </div>
+              <div class="flex items-center gap-2 text-slate-300"><i class="fa-solid fa-camera text-cyber-neon"></i> <span class="tracking-wider">SYS.VIEWFINDER</span></div>
+              <div class="flex items-center gap-2"><span class="status-dot w-2.5 h-2.5 rounded-full bg-slate-600"></span><span class="status-text text-slate-400">OFFLINE</span></div>
             </div>
             <div id="slot-biasa" class="relative aspect-[4/3] w-full rounded-3xl overflow-hidden shadow-inner bg-slate-950"></div>
             <div id="result-stats-biasa" class="hidden p-4 rounded-2xl bg-slate-900/50 border border-cyber-neon/20 grid grid-cols-2 gap-3 font-mono text-xs">
@@ -280,18 +271,15 @@
           </div>
 
 
-          <!-- ================= TAMPILAN 2: PRO DASHBOARD ================= -->
+          <!-- TAMPILAN 2: PRO DASHBOARD -->
           <div id="view-pro" class="hidden flex-col gap-6">
             <div class="pro-hud p-5 rounded-2xl flex items-center justify-between border-l-4 border-l-cyber-neon">
               <div>
-                <h2 class="text-xl sm:text-2xl font-black text-white font-mono tracking-wide uppercase flex items-center gap-3">
-                  <i class="fa-solid fa-network-wired text-cyber-neon"></i> ADVANCED ENGINE
-                </h2>
+                <h2 class="text-xl sm:text-2xl font-black text-white font-mono tracking-wide uppercase flex items-center gap-3"><i class="fa-solid fa-network-wired text-cyber-neon"></i> ADVANCED ENGINE</h2>
                 <p class="text-cyber-neon/70 font-mono text-[10px] mt-1 tracking-[0.2em]">SYS.OVERRIDE // LEVEL: ADMINISTRATOR</p>
               </div>
               <div class="hidden sm:flex text-right flex-col font-mono text-xs text-slate-400">
-                <span>FPS: <span class="fps-val text-cyber-accent font-bold">60</span></span>
-                <span>LAT: <span class="text-cyber-purple font-bold">10ms</span></span>
+                <span>FPS: <span class="fps-val text-cyber-accent font-bold">60</span></span><span>LAT: <span class="text-cyber-purple font-bold">10ms</span></span>
               </div>
             </div>
 
@@ -376,37 +364,15 @@
 
     <script>
       // ================= KEAMANAN CYBERSECURITY (ANTI-KEPO) =================
-      
-      // 1. Blokir Klik Kanan
       document.addEventListener('contextmenu', event => event.preventDefault());
-
-      // 2. Blokir Shortcut DevTools (F12, Ctrl+Shift+I, Ctrl+U)
       document.addEventListener('keydown', event => {
         if (event.keyCode === 123) { event.preventDefault(); return false; } // F12
         if (event.ctrlKey && event.shiftKey && event.keyCode === 73) { event.preventDefault(); return false; } // Ctrl+Shift+I
         if (event.ctrlKey && event.shiftKey && event.keyCode === 74) { event.preventDefault(); return false; } // Ctrl+Shift+J
         if (event.ctrlKey && event.keyCode === 85) { event.preventDefault(); return false; } // Ctrl+U
       });
-
-      // 3. Console Honeypot (Tebaran peringatan kalau nekat buka console)
       console.log("%c🚨 WARNING: UNAUTHORIZED ACCESS DETECTED! 🚨", "color: red; font-size: 30px; font-weight: 900; background: black; padding: 20px; border: 5px solid red;");
       console.log("%cYOUR IP HAS BEEN LOGGED AND REPORTED TO SYSTEM ADMINISTRATOR.", "color: white; font-size: 15px; font-weight: bold; background: black; padding: 10px;");
-
-      // =======================================================================
-
-
-      // ================= INISIALISASI MODEL AI (FACE-API) =================
-      let faceAiReady = false;
-      const aiBadge = document.getElementById("ai-status-badge");
-      
-      Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model')
-      ]).then(() => {
-        faceAiReady = true;
-        aiBadge.innerHTML = `<i class="fa-solid fa-circle-dot animate-pulse"></i> <span>AI ENGINE ACTIVE</span>`;
-      }).catch(err => {
-        aiBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400"></i> <span class="text-amber-400">AI ENGINE OFFLINE</span>`;
-      });
 
       // ================= ELEMEN INTI & VARIABEL =================
       const cameraCore = document.getElementById('camera-core');
@@ -426,22 +392,24 @@
       let audioEnabled = true;
       let audioCtx = null;
       let alarmInterval = null;
-      let cheatMode = 'random'; // 'random', 'success', 'fail'
+      let cheatMode = 'random'; 
       let logoClickCount = 0;
       let logoClickTimer = null;
 
       let dataBerhasil = [{ id: "berhasil-1", src: "assets/berhasil.jpg", alt: "Berhasil" }];
       let dataGagal = [{ id: "gagal-1", src: "assets/gagal.jpg", alt: "Gagal" }];
 
-      // ================= LOGIKA CHEAT MENU DENGAN PIN =================
+      // ================= LOGIKA CHEAT MENU DENGAN PIN & VOICE CUSTOM =================
       const logoTrigger = document.getElementById('logo-trigger');
       const pinModal = document.getElementById('pin-modal');
       const cheatModal = document.getElementById('cheat-modal');
       const cheatStatusText = document.getElementById('cheat-status-text');
       const pinInput = document.getElementById('pin-input');
       const pinError = document.getElementById('pin-error');
+      
+      const voiceSuccessInput = document.getElementById('voice-success-input');
+      const voiceFailInput = document.getElementById('voice-fail-input');
 
-      // 1. Deteksi Klik 3 Kali
       logoTrigger.addEventListener('click', () => {
         logoClickCount++;
         if (logoClickTimer) clearTimeout(logoClickTimer);
@@ -449,44 +417,31 @@
         
         if (logoClickCount === 3) {
           playSFX('beep');
-          pinInput.value = '';
-          pinError.classList.add('hidden');
-          pinModal.classList.remove('hidden'); // Munculin PIN Modal, BUKAN Cheat Modal!
+          pinInput.value = ''; pinError.classList.add('hidden'); pinModal.classList.remove('hidden');
           setTimeout(() => pinInput.focus(), 100);
           logoClickCount = 0;
         }
       });
 
-      // 2. Verifikasi PIN
       function verifyPin() {
         if (pinInput.value === "951753") {
-          playSFX('success');
-          speakVoice("Akses Admin Diberikan.");
-          pinModal.classList.add('hidden');
-          cheatModal.classList.remove('hidden');
+          playSFX('success'); speakVoice("Akses Admin Diberikan.");
+          pinModal.classList.add('hidden'); cheatModal.classList.remove('hidden');
         } else {
-          playSFX('beep');
-          pinError.classList.remove('hidden');
-          pinInput.value = '';
-          pinInput.focus();
+          playSFX('beep'); pinError.classList.remove('hidden'); pinInput.value = ''; pinInput.focus();
         }
       }
 
       function closePinModal() { playSFX('beep'); pinModal.classList.add('hidden'); }
 
-      // 3. Setingan Cheat (Setelah masuk PIN)
       function setCheat(mode) {
-        playSFX('beep');
-        cheatMode = mode;
+        playSFX('beep'); cheatMode = mode;
         if (mode === 'success') {
           cheatStatusText.innerHTML = "STATUS: <span class='text-emerald-400'>FORCE SUKSES</span>";
-          speakVoice("Target dikunci pada sukses.");
         } else if (mode === 'fail') {
           cheatStatusText.innerHTML = "STATUS: <span class='text-red-400'>FORCE GAGAL</span>";
-          speakVoice("Target dikunci pada gagal.");
         } else {
           cheatStatusText.innerHTML = "STATUS: <span class='text-slate-400'>NORMAL (RANDOM)</span>";
-          speakVoice("Mode normal diaktifkan.");
         }
       }
       function closeCheatModal() { playSFX('beep'); cheatModal.classList.add('hidden'); }
@@ -496,7 +451,7 @@
         if (!audioEnabled) return;
         window.speechSynthesis.cancel(); 
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'id-ID'; utterance.rate = 1.0; utterance.pitch = 0.6; // Suara berat robotik
+        utterance.lang = 'id-ID'; utterance.rate = 1.0; utterance.pitch = 0.6;
         window.speechSynthesis.speak(utterance);
       }
 
@@ -514,15 +469,13 @@
         if (mode === 'biasa') {
           slotBiasa.appendChild(cameraCore);
           viewBiasa.classList.remove('hidden'); viewPro.classList.add('hidden'); viewPro.classList.remove('flex');
-          kolomKiri.classList.remove('hidden', 'opacity-0');
-          kolomKanan.className = "lg:col-span-7 relative transition-all duration-700";
+          kolomKiri.classList.remove('hidden', 'opacity-0'); kolomKanan.className = "lg:col-span-7 relative transition-all duration-700";
           tabBiasa.className = "px-4 py-3 font-mono font-bold text-xs sm:text-sm text-cyber-neon border-b-2 border-cyber-neon transition-all flex items-center gap-2 hover:bg-cyber-neon/5";
           tabPro.className = "px-4 py-3 font-mono font-bold text-xs sm:text-sm text-slate-500 hover:text-cyber-neon border-b-2 border-transparent transition-all flex items-center gap-2 hover:bg-cyber-neon/5";
         } else {
           slotPro.appendChild(cameraCore);
           viewPro.classList.remove('hidden'); viewPro.classList.add('flex'); viewBiasa.classList.add('hidden');
-          kolomKiri.classList.add('hidden', 'opacity-0');
-          kolomKanan.className = "lg:col-span-12 relative transition-all duration-700 w-full";
+          kolomKiri.classList.add('hidden', 'opacity-0'); kolomKanan.className = "lg:col-span-12 relative transition-all duration-700 w-full";
           tabPro.className = "px-4 py-3 font-mono font-bold text-xs sm:text-sm text-cyber-neon border-b-2 border-cyber-neon transition-all flex items-center gap-2 hover:bg-cyber-neon/5";
           tabBiasa.className = "px-4 py-3 font-mono font-bold text-xs sm:text-sm text-slate-500 hover:text-cyber-neon border-b-2 border-transparent transition-all flex items-center gap-2 hover:bg-cyber-neon/5";
         }
@@ -535,8 +488,8 @@
       const cameraStatus = document.querySelector("#camera-status");
       const resultImage = document.querySelector("#result-image");
       const laserOverlay = document.querySelector("#laser-overlay");
-      const fakeTerminalLog = document.getElementById("fake-terminal-log"); // Aesthetic Security Element
-      const intruderLockdown = document.getElementById("intruder-lockdown"); // Aesthetic Security Element
+      const fakeTerminalLog = document.getElementById("fake-terminal-log"); 
+      const intruderLockdown = document.getElementById("intruder-lockdown"); 
 
       const mainButtons = document.querySelectorAll(".btn-start");
       const resetButtons = document.querySelectorAll(".btn-reset");
@@ -559,10 +512,8 @@
       const zoomValText = document.getElementById("zoom-val");
 
       function updateVideoTransform() {
-        const isFront = currentFacingMode === "user";
-        const mirrorScale = isFront ? -1 : 1; 
-        video.style.transform = `scale(${zoomLevel}) scaleX(${mirrorScale})`;
-        resultImage.style.transform = `scale(${zoomLevel}) scaleX(${mirrorScale})`;
+        const isFront = currentFacingMode === "user"; const mirrorScale = isFront ? -1 : 1; 
+        video.style.transform = `scale(${zoomLevel}) scaleX(${mirrorScale})`; resultImage.style.transform = `scale(${zoomLevel}) scaleX(${mirrorScale})`;
       }
 
       document.getElementById("btn-flip").addEventListener("click", async () => {
@@ -570,9 +521,7 @@
         if (state === "ready") await startCamera(); 
       });
 
-      zoomSlider.addEventListener("input", (e) => {
-        zoomLevel = parseFloat(e.target.value); zoomValText.textContent = zoomLevel.toFixed(1) + "x"; updateVideoTransform();
-      });
+      zoomSlider.addEventListener("input", (e) => { zoomLevel = parseFloat(e.target.value); zoomValText.textContent = zoomLevel.toFixed(1) + "x"; updateVideoTransform(); });
 
       function setButtonsState(stateName, innerHTML = "") {
         mainButtons.forEach(btn => {
@@ -584,26 +533,21 @@
       function setResetButtonsState(stateName) { resetButtons.forEach(btn => { if (stateName === "hidden") btn.classList.add("hidden"); else if (stateName === "show") btn.classList.remove("hidden"); }); }
 
       function hardResetSystem() {
-        playSFX('scan');
-        speakVoice("Sistem di reset ke pengaturan pabrik.");
+        playSFX('scan'); speakVoice("Sistem di reset ke pengaturan pabrik.");
         document.documentElement.style.setProperty('--color-neon', hexToRgb('#00ffcc'));
         document.getElementById('theme-color-picker').value = '#00ffcc'; document.getElementById('hex-display').textContent = '#00FFCC';
         dataBerhasil = [{ id: "berhasil-1", src: "assets/berhasil.jpg", alt: "Berhasil" }];
         dataGagal = [{ id: "gagal-1", src: "assets/gagal.jpg", alt: "Gagal" }];
+        voiceSuccessInput.value = ''; voiceFailInput.value = ''; // Reset voice input
         zoomLevel = 1.0; zoomSlider.value = 1.0; zoomValText.textContent = "1.0x";
-        currentFacingMode = "user";
-        cheatMode = "random"; 
+        currentFacingMode = "user"; cheatMode = "random"; 
         cheatStatusText.innerHTML = "STATUS: <span class='text-slate-400'>NORMAL (RANDOM)</span>";
         reset(); switchTab('biasa'); 
       }
 
-      function hexToRgb(hex) {
-        const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
-        return `${r} ${g} ${b}`;
-      }
+      function hexToRgb(hex) { const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16); return `${r} ${g} ${b}`; }
       document.getElementById('theme-color-picker').addEventListener('input', (e) => {
-        const hex = e.target.value; document.getElementById('hex-display').textContent = hex.toUpperCase();
-        document.documentElement.style.setProperty('--color-neon', hexToRgb(hex));
+        const hex = e.target.value; document.getElementById('hex-display').textContent = hex.toUpperCase(); document.documentElement.style.setProperty('--color-neon', hexToRgb(hex));
       });
       document.getElementById('upload-success').addEventListener('change', function(e) {
         if (e.target.files.length > 0) {
@@ -641,7 +585,6 @@
             gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
             osc.start(now); osc.stop(now + 0.5);
           } else if (type === 'alarm') {
-            // Sirene Intruder (Naik turun)
             osc.type = 'square';
             osc.frequency.setValueAtTime(400, now); osc.frequency.setValueAtTime(600, now + 0.2);
             osc.frequency.setValueAtTime(400, now + 0.4); osc.frequency.setValueAtTime(600, now + 0.6);
@@ -687,30 +630,11 @@
         }
       }
 
-      async function fallbackFaceAPI() {
-        if (faceAiReady) { const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()); return detections.length > 0; }
-        return true; 
-      }
-
       async function captureAndVerify() {
         if (!video.videoWidth) return;
-        setButtonsState("loading", '<i class="fa-solid fa-spinner animate-spin"></i><span>MENDETEKSI WAJAH...</span>');
-
-        let faceDetected = false;
-        if ('FaceDetector' in window) {
-            try { const detector = new FaceDetector({ fastMode: true }); const faces = await detector.detect(video); faceDetected = faces.length > 0; } 
-            catch (e) { faceDetected = await fallbackFaceAPI(); }
-        } else { faceDetected = await fallbackFaceAPI(); }
-
-        if (!faceDetected) {
-            playSFX('beep'); speakVoice("Gagal. Wajah tidak terdeteksi. Arahkan kamera dengan benar.");
-            showStatus('<i class="fa-solid fa-triangle-exclamation text-lg block mb-1"></i> GAGAL: WAJAH TIDAK TERDETEKSI!', true);
-            setButtonsState("show", '<i class="fa-solid fa-expand"></i><span>CAPTURE SCAN</span>'); setTimeout(hideStatus, 3500); 
-            return; 
-        }
-
+        
         playSFX('scan');
-        speakVoice("Memulai protokol enkripsi. Menganalisis geometri wajah.");
+        speakVoice("Memulai protokol enkripsi. Menganalisis objek target.");
         document.getElementById("camera-controls").classList.add("hidden");
 
         canvas.width = video.videoWidth; canvas.height = video.videoHeight;
@@ -720,21 +644,19 @@
         stopCamera();
         laserOverlay.classList.remove("hidden");
         
-        // --- AESTHETIC SECURITY: FAKE TERMINAL LOG ---
         fakeTerminalLog.innerHTML = ""; fakeTerminalLog.classList.remove('hidden');
-        const hackerLogs = [ "> INITIATING HANDSHAKE...", "> ESTABLISHING 256-BIT ENCRYPTION...", "> BYPASSING FIREWALL...", "> EXTRACTING BIOMETRIC DATA...", "> CROSS-REFERENCING DATABASE...", "> [SECURE] MATCHING PATTERN..." ];
+        const hackerLogs = [ "> INITIATING HANDSHAKE...", "> ESTABLISHING 256-BIT ENCRYPTION...", "> BYPASSING FIREWALL...", "> EXTRACTING DATA TARGET...", "> CROSS-REFERENCING DATABASE...", "> [SECURE] MATCHING PATTERN..." ];
         let logIndex = 0;
         let logInterval = setInterval(() => {
            if(logIndex < hackerLogs.length) { fakeTerminalLog.innerHTML += `<div class="mt-1">${hackerLogs[logIndex]}</div>`; logIndex++; } 
            else { clearInterval(logInterval); }
         }, 350); 
-        // ---------------------------------------------
 
         setButtonsState("loading", '<i class="fa-solid fa-atom animate-spin"></i><span>SCANNING...</span>'); state = "processing";
 
         window.setTimeout(() => {
           laserOverlay.classList.add("hidden");
-          fakeTerminalLog.classList.add("hidden"); // Hilangkan terminal fake
+          fakeTerminalLog.classList.add("hidden");
           
           let isSuccess;
           if (cheatMode === 'success') isSuccess = true;
@@ -749,18 +671,16 @@
           resultImage.src = chosen.src; resultImage.alt = chosen.alt;
 
           if (chosen.id.includes("gagal")) {
-            // --- AESTHETIC SECURITY: INTRUDER ALARM ---
-            speakVoice("Ancaman keamanan siber terdeteksi. Mengunci perangkat secara paksa.");
+            // === LOGIKA CUSTOM VOICE GAGAL ===
+            let customFailVoice = voiceFailInput.value.trim();
+            speakVoice(customFailVoice !== "" ? customFailVoice : "Ancaman keamanan siber terdeteksi. Mengunci perangkat secara paksa.");
             
-            // Loop suara sirine selama 5 detik
             let alarmCount = 0;
             alarmInterval = setInterval(() => {
               playSFX('alarm'); alarmCount++;
-              if (alarmCount > 5) clearInterval(alarmInterval); // Berhenti setelah 5 loop
+              if (alarmCount > 5) clearInterval(alarmInterval);
             }, 900);
-            
-            intruderLockdown.classList.remove("hidden"); // Munculkan layar merah Glitch!
-            // ------------------------------------------
+            intruderLockdown.classList.remove("hidden"); 
 
             statsBiasa.classList.add("hidden"); statsPro.classList.add("hidden");
             standbyPro.classList.remove("hidden");
@@ -768,7 +688,10 @@
           } else {
             playSFX('success');
             const auraVal = Math.floor(Math.random() * 40 + 60); const charmVal = Math.floor(Math.random() * 30 + 70);
-            speakVoice(`Akses otorisasi diterima. Keamanan level ${charmVal} persen.`);
+            
+            // === LOGIKA CUSTOM VOICE SUKSES ===
+            let customSuccessVoice = voiceSuccessInput.value.trim();
+            speakVoice(customSuccessVoice !== "" ? customSuccessVoice : `Akses otorisasi diterima. Keamanan level ${charmVal} persen.`);
 
             statsBiasa.classList.remove("hidden"); barAuraBiasa.style.width = auraVal + "%"; barCharmBiasa.style.width = charmVal + "%";
             standbyPro.classList.add("hidden"); statsPro.classList.remove("hidden"); barAuraPro.style.width = auraVal + "%"; barCharmPro.style.width = charmVal + "%";
@@ -785,17 +708,14 @@
       }
 
       function rebootSystem() {
-        if(alarmInterval) clearInterval(alarmInterval); // Matikan sirine
-        playSFX('beep');
-        intruderLockdown.classList.add("hidden");
-        reset();
+        if(alarmInterval) clearInterval(alarmInterval); 
+        playSFX('beep'); intruderLockdown.classList.add("hidden"); reset();
       }
 
       function reset() {
         playSFX('beep'); stopCamera();
         resultImage.removeAttribute("src"); resultImage.classList.add("hidden");
-        laserOverlay.classList.add("hidden"); cameraEmpty.classList.remove("hidden");
-        fakeTerminalLog.classList.add("hidden");
+        laserOverlay.classList.add("hidden"); cameraEmpty.classList.remove("hidden"); fakeTerminalLog.classList.add("hidden");
         
         statsBiasa.classList.add("hidden"); statsPro.classList.add("hidden");
         barAuraBiasa.style.width = "0%"; barCharmBiasa.style.width = "0%"; barAuraPro.style.width = "0%"; barCharmPro.style.width = "0%";
