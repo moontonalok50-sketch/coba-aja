@@ -34,6 +34,7 @@
               'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
               'scan-laser': 'scanLaser 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
               'glitch-red': 'glitchRed 0.3s ease-in-out infinite alternate',
+              'fade-in': 'fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
             },
             keyframes: {
               pulseGlow: {
@@ -45,6 +46,10 @@
                 '0%': { backgroundColor: 'rgba(255, 0, 60, 0.2)', transform: 'translate(2px, 1px)' },
                 '50%': { backgroundColor: 'rgba(255, 0, 60, 0.5)', transform: 'translate(-2px, -2px)' },
                 '100%': { backgroundColor: 'rgba(255, 0, 60, 0.8)', transform: 'translate(1px, 2px)' }
+              },
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(12px) scale(0.98)' },
+                '100%': { opacity: '1', transform: 'translateY(0) scale(1)' }
               }
             }
           }
@@ -53,30 +58,78 @@
     </script>
 
     <style>
-      /* ANTI-KEPO: Cegah blok/seleksi teks di seluruh halaman */
       body {
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
+        -webkit-user-select: none; user-select: none;
         background-color: #030712;
-        background-image: radial-gradient(circle at 15% 15%, rgb(var(--color-neon), 0.08) 0%, transparent 40%), radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
+        background-image: 
+          radial-gradient(circle at 10% 20%, rgb(var(--color-neon), 0.05) 0%, transparent 40%), 
+          radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.05) 0%, transparent 40%),
+          linear-gradient(rgba(255,255,255,0.01) 50%, rgba(0,0,0,0.05) 50%);
+        background-size: 100% 4px, 100% 100%;
         background-attachment: fixed;
       }
-      .glass-hud { background: rgba(11, 19, 38, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgb(var(--color-neon), 0.15); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
-      .pro-hud { background: rgba(5, 7, 15, 0.9); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgb(var(--color-neon), 0.3); box-shadow: 0 0 40px rgba(var(--color-neon), 0.1), inset 0 0 20px rgba(0,0,0,0.8); }
+
+      /* Un-template HUD Custom Design */
+      .glass-hud {
+        background: linear-gradient(135deg, rgba(13, 22, 42, 0.85) 0%, rgba(5, 10, 20, 0.95) 100%);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid rgb(var(--color-neon), 0.2);
+        box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255,255,255,0.05);
+      }
+
+      .pro-hud {
+        background: linear-gradient(145deg, rgba(7, 10, 22, 0.95) 0%, rgba(2, 4, 10, 0.98) 100%);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgb(var(--color-neon), 0.35);
+        box-shadow: 0 0 50px rgba(var(--color-neon), 0.08), inset 0 0 25px rgba(0,0,0,0.9);
+      }
+
       .glow-border { position: relative; }
-      .glow-border::before { content: ''; position: absolute; inset: -1px; background: linear-gradient(45deg, rgb(var(--color-neon)), transparent, #a855f7); border-radius: inherit; z-index: -1; opacity: 0.3; transition: opacity 0.3s; }
-      .glow-border:hover::before { opacity: 0.8; }
-      .bg-grid { background-size: 40px 40px; background-image: linear-gradient(to right, rgba(var(--color-neon), 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(var(--color-neon), 0.1) 1px, transparent 1px); }
-      input[type=range] { -webkit-appearance: none; background: rgba(255, 255, 255, 0.1); border-radius: 10px; height: 6px; }
-      input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: rgb(var(--color-neon)); cursor: pointer; box-shadow: 0 0 10px rgb(var(--color-neon)); }
+      .glow-border::before {
+        content: ''; position: absolute; inset: -1px;
+        background: linear-gradient(90deg, rgb(var(--color-neon)), #a855f7, transparent);
+        border-radius: inherit; z-index: -1; opacity: 0.4; transition: opacity 0.4s ease;
+      }
+      .glow-border:hover::before { opacity: 0.9; }
+
+      .bg-grid {
+        background-size: 32px 32px;
+        background-image: 
+          linear-gradient(to right, rgba(var(--color-neon), 0.07) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(var(--color-neon), 0.07) 1px, transparent 1px);
+      }
+
+      input[type=range] {
+        -webkit-appearance: none; background: rgba(255, 255, 255, 0.1); border-radius: 8px; height: 5px;
+      }
+      input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none; height: 14px; width: 14px; border-radius: 4px;
+        background: rgb(var(--color-neon)); cursor: pointer; box-shadow: 0 0 12px rgb(var(--color-neon));
+      }
     </style>
   </head>
-  <body class="text-slate-100 min-h-screen flex flex-col justify-between font-sans antialiased overflow-x-hidden transition-all duration-500">
+  <body class="text-slate-100 min-h-screen flex flex-col justify-between font-sans antialiased overflow-x-hidden opacity-0 transition-opacity duration-700" id="main-body">
 
-    <!-- ================= INTRUDER LOCKDOWN (SISTEM TERANCAM) ================= -->
-    <div id="intruder-lockdown" class="hidden fixed inset-0 z-[999] bg-cyber-danger/10 flex flex-col items-center justify-center animate-glitch-red backdrop-blur-sm">
+    <!-- ================= CINEMATIC INTRO BOOT ANIMATION ================= -->
+    <div id="intro-screen" class="fixed inset-0 z-[9999] bg-[#030712] flex flex-col items-center justify-center font-mono p-6 transition-opacity duration-700">
+      <div class="w-full max-w-md space-y-4">
+        <div class="flex items-center justify-between text-xs text-cyber-neon tracking-widest border-b border-cyber-neon/30 pb-2">
+          <span>[SYSTEM_BOOT_SEQUENCE]</span>
+          <span id="boot-percent">0%</span>
+        </div>
+        <div id="boot-log" class="text-[11px] text-slate-400 space-y-1 h-28 overflow-hidden flex flex-col justify-end">
+          <div>> Initializing secure kernel environment...</div>
+        </div>
+        <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden border border-cyber-neon/20">
+          <div id="boot-bar" class="bg-cyber-neon h-full w-0 transition-all duration-150 shadow-[0_0_15px_rgba(var(--color-neon),1)]"></div>
+        </div>
+      </div>
+    </div>
+    <!-- ================================================================= -->
+
+    <!-- ================= INTRUDER LOCKDOWN ================= -->
+    <div id="intruder-lockdown" class="hidden fixed inset-0 z-[999] bg-cyber-danger/15 flex flex-col items-center justify-center animate-glitch-red backdrop-blur-md">
       <i class="fa-solid fa-triangle-exclamation text-8xl text-white mb-6 animate-pulse"></i>
       <h1 class="text-4xl sm:text-7xl text-white font-black font-mono tracking-tighter text-center">SYSTEM LOCKED</h1>
       <p class="text-white text-lg sm:text-2xl font-mono mt-2 mb-10 font-bold bg-black px-4 py-1">UNAUTHORIZED BIOMETRIC DETECTED</p>
@@ -119,17 +172,15 @@
           </button>
         </div>
 
-        <!-- FITUR BARU: CUSTOM AI VOICE -->
         <div class="mt-6 border-t border-slate-800 pt-4 space-y-3">
           <p class="text-[10px] font-mono text-center text-cyber-neon font-bold tracking-widest"><i class="fa-solid fa-microphone-lines"></i> CUSTOM AI VOICE ROAST</p>
-          
           <div>
-            <label class="text-[9px] text-emerald-400 font-mono mb-1 block uppercase">Teks Sukses (Kosongkan utk default):</label>
-            <input type="text" id="voice-success-input" placeholder="Akses diterima..." class="w-full bg-black border border-emerald-500/30 text-emerald-400 text-xs font-mono p-2 rounded-lg outline-none focus:border-emerald-400 focus:bg-slate-900 transition-all">
+            <label class="text-[9px] text-emerald-400 font-mono mb-1 block uppercase">Teks Sukses:</label>
+            <input type="text" id="voice-success-input" placeholder="Akses diterima..." class="w-full bg-black border border-emerald-500/30 text-emerald-400 text-xs font-mono p-2 rounded-lg outline-none focus:border-emerald-400 transition-all">
           </div>
           <div>
-            <label class="text-[9px] text-red-400 font-mono mb-1 block uppercase">Teks Gagal (Kosongkan utk default):</label>
-            <input type="text" id="voice-fail-input" placeholder="Ancaman keamanan..." class="w-full bg-black border border-red-500/30 text-red-400 text-xs font-mono p-2 rounded-lg outline-none focus:border-red-400 focus:bg-slate-900 transition-all">
+            <label class="text-[9px] text-red-400 font-mono mb-1 block uppercase">Teks Gagal:</label>
+            <input type="text" id="voice-fail-input" placeholder="Ancaman keamanan..." class="w-full bg-black border border-red-500/30 text-red-400 text-xs font-mono p-2 rounded-lg outline-none focus:border-red-400 transition-all">
           </div>
         </div>
 
@@ -142,11 +193,11 @@
       </div>
     </div>
 
-    <!-- Ambient / Background -->
-    <div id="ambient-1" class="fixed top-20 left-1/4 w-96 h-96 bg-cyber-neon/10 rounded-full blur-[120px] pointer-events-none animate-pulse-glow transition-all duration-1000"></div>
-    <div id="ambient-2" class="fixed bottom-10 right-1/4 w-96 h-96 bg-cyber-purple/10 rounded-full blur-[120px] pointer-events-none animate-pulse-glow transition-all duration-1000" style="animation-delay: 1s;"></div>
+    <!-- Ambient Background Lighting -->
+    <div class="fixed top-12 left-1/4 w-[32rem] h-[32rem] bg-cyber-neon/10 rounded-full blur-[140px] pointer-events-none animate-pulse-glow"></div>
+    <div class="fixed bottom-10 right-1/4 w-[32rem] h-[32rem] bg-cyber-purple/10 rounded-full blur-[140px] pointer-events-none animate-pulse-glow" style="animation-delay: 1.2s;"></div>
 
-    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-grow flex flex-col relative z-10">
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-grow flex flex-col relative z-10 animate-fade-in">
       
       <!-- HEADER -->
       <header class="flex items-center justify-between pb-5 border-b border-slate-800/80 mb-6">
@@ -161,7 +212,7 @@
             </button>
           </div>
         </div>
-        <button id="sound-toggle" onclick="toggleAudio()" class="px-3 py-2 rounded-xl glass-hud text-slate-300 text-xs font-mono flex items-center gap-2 hover:border-cyber-neon active:scale-95 transition-all duration-300">
+        <button id="sound-toggle" onclick="toggleAudio()" class="px-3.5 py-2 rounded-xl glass-hud text-slate-300 text-xs font-mono flex items-center gap-2 hover:border-cyber-neon active:scale-95 transition-all duration-300">
           <i id="sound-icon" class="fa-solid fa-volume-high text-cyber-neon"></i>
           <span id="sound-text" class="hidden sm:inline">SFX & VOICE: ON</span>
         </button>
@@ -188,7 +239,7 @@
           <h1 class="text-4xl sm:text-5xl font-black tracking-tight leading-none text-white">
             Analisis Wajah <br><span class="bg-gradient-to-r from-cyber-neon via-emerald-300 to-cyber-accent bg-clip-text text-transparent">Hologram Realtime</span>
           </h1>
-          <p class="text-slate-400 text-sm sm:text-base leading-relaxed">Sistem pemindai tingkat tinggi dengan proteksi biometrik dan AES-256.</p>
+          <p class="text-slate-400 text-sm sm:text-base leading-relaxed">Sistem pemindai tingkat tinggi dengan proteksi biometrik dan enkripsi objek langsung.</p>
           <div class="grid grid-cols-3 gap-3 pt-2">
             <div class="glass-hud p-3 rounded-2xl border-slate-800 text-center hover:-translate-y-1 transition-all duration-300">
               <span class="block text-[10px] text-slate-400 font-mono uppercase">Akurasi</span>
@@ -207,6 +258,7 @@
 
         <!-- KOLOM KANAN -->
         <section id="kolom-kanan" class="lg:col-span-7 relative transition-all duration-700">
+          
           <!-- INTI KAMERA -->
           <div id="camera-core-wrapper" class="hidden">
             <div id="camera-core" class="absolute inset-0 w-full h-full bg-slate-950 flex flex-col items-center justify-center overflow-hidden rounded-3xl shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] border border-slate-800">
@@ -214,15 +266,15 @@
               <canvas id="capture-canvas" class="hidden"></canvas>
               <img id="result-image" class="hidden absolute inset-0 w-full h-full object-contain z-10 transition-transform duration-200" alt="Hasil Scan">
 
-              <div id="fake-terminal-log" class="hidden absolute inset-0 z-20 bg-slate-950/70 p-4 font-mono text-[10px] text-cyber-neon flex flex-col justify-end pointer-events-none"></div>
+              <div id="fake-terminal-log" class="hidden absolute inset-0 z-20 bg-slate-950/75 p-4 font-mono text-[10px] text-cyber-neon flex flex-col justify-end pointer-events-none"></div>
 
               <div id="laser-overlay" class="hidden absolute inset-0 z-20 pointer-events-none overflow-hidden">
                 <div class="w-full h-1 bg-cyber-neon shadow-[0_0_25px_rgba(var(--color-neon),1)] absolute animate-scan-laser z-30"></div>
               </div>
 
-              <div id="camera-controls" class="hidden absolute bottom-4 z-50 flex items-center justify-center gap-4 bg-slate-900/80 backdrop-blur-md px-5 py-2 rounded-full border border-cyber-neon/40 shadow-lg">
+              <div id="camera-controls" class="hidden absolute bottom-4 z-50 flex items-center justify-center gap-4 bg-slate-900/85 backdrop-blur-md px-5 py-2.5 rounded-full border border-cyber-neon/40 shadow-lg">
                 <button id="btn-flip" class="text-slate-300 hover:text-cyber-neon transition-colors active:scale-90" title="Tukar Kamera"><i class="fa-solid fa-camera-rotate text-lg"></i></button>
-                <div class="h-6 w-px bg-slate-700"></div>
+                <div class="h-5 w-px bg-slate-700"></div>
                 <div class="flex items-center gap-3">
                   <i class="fa-solid fa-magnifying-glass-minus text-xs text-slate-400"></i>
                   <input type="range" id="zoom-slider" min="1" max="3" step="0.1" value="1" class="w-20 sm:w-28">
@@ -243,7 +295,7 @@
             </div>
           </div>
 
-          <!-- TAMPILAN 1: SCANNER BIASA -->
+          <!-- TAMPILAN 1: SCANNER UTAMA -->
           <div id="view-biasa" class="glass-hud p-4 sm:p-6 rounded-3xl glow-border relative block space-y-4">
             <div class="flex items-center justify-between px-1 font-mono text-xs">
               <div class="flex items-center gap-2 text-slate-300"><i class="fa-solid fa-camera text-cyber-neon"></i> <span class="tracking-wider">SYS.VIEWFINDER</span></div>
@@ -269,7 +321,6 @@
               </button>
             </div>
           </div>
-
 
           <!-- TAMPILAN 2: PRO DASHBOARD -->
           <div id="view-pro" class="hidden flex-col gap-6">
@@ -363,16 +414,53 @@
     </div>
 
     <script>
+      // ================= ANIMASI INTRO BOOT-UP (CINEMATIC START) =================
+      window.addEventListener('DOMContentLoaded', () => {
+        const introScreen = document.getElementById('intro-screen');
+        const mainBody = document.getElementById('main-body');
+        const bootBar = document.getElementById('boot-bar');
+        const bootPercent = document.getElementById('boot-percent');
+        const bootLog = document.getElementById('boot-log');
+
+        const logs = [
+          "> Mounting virtual filesystem...",
+          "> Verifying cryptographic digital signature...",
+          "> Establishing secure biometrics websocket...",
+          "> Core matrix successfully online."
+        ];
+
+        let progress = 0;
+        let logIdx = 0;
+
+        const bootInterval = setInterval(() => {
+          progress += Math.floor(Math.random() * 8) + 5;
+          if (progress >= 100) {
+            progress = 100;
+            clearInterval(bootInterval);
+            setTimeout(() => {
+              introScreen.style.opacity = '0';
+              mainBody.style.opacity = '1';
+              setTimeout(() => introScreen.remove(), 700);
+            }, 300);
+          }
+          bootBar.style.width = progress + '%';
+          bootPercent.textContent = progress + '%';
+
+          if (progress > (logIdx + 1) * 22 && logIdx < logs.length) {
+            bootLog.innerHTML += `<div>${logs[logIdx]}</div>`;
+            logIdx++;
+          }
+        }, 80);
+      });
+
       // ================= KEAMANAN CYBERSECURITY (ANTI-KEPO) =================
       document.addEventListener('contextmenu', event => event.preventDefault());
       document.addEventListener('keydown', event => {
-        if (event.keyCode === 123) { event.preventDefault(); return false; } // F12
-        if (event.ctrlKey && event.shiftKey && event.keyCode === 73) { event.preventDefault(); return false; } // Ctrl+Shift+I
-        if (event.ctrlKey && event.shiftKey && event.keyCode === 74) { event.preventDefault(); return false; } // Ctrl+Shift+J
-        if (event.ctrlKey && event.keyCode === 85) { event.preventDefault(); return false; } // Ctrl+U
+        if (event.keyCode === 123) { event.preventDefault(); return false; } 
+        if (event.ctrlKey && event.shiftKey && event.keyCode === 73) { event.preventDefault(); return false; } 
+        if (event.ctrlKey && event.shiftKey && event.keyCode === 74) { event.preventDefault(); return false; } 
+        if (event.ctrlKey && event.keyCode === 85) { event.preventDefault(); return false; } 
       });
-      console.log("%c🚨 WARNING: UNAUTHORIZED ACCESS DETECTED! 🚨", "color: red; font-size: 30px; font-weight: 900; background: black; padding: 20px; border: 5px solid red;");
-      console.log("%cYOUR IP HAS BEEN LOGGED AND REPORTED TO SYSTEM ADMINISTRATOR.", "color: white; font-size: 15px; font-weight: bold; background: black; padding: 10px;");
 
       // ================= ELEMEN INTI & VARIABEL =================
       const cameraCore = document.getElementById('camera-core');
@@ -385,7 +473,7 @@
       const kolomKiri = document.getElementById('kolom-kiri');
       const kolomKanan = document.getElementById('kolom-kanan');
 
-      slotBiasa.appendChild(cameraCore); // Default
+      slotBiasa.appendChild(cameraCore);
 
       let cameraStream = null;
       let state = "idle";
@@ -538,7 +626,7 @@
         document.getElementById('theme-color-picker').value = '#00ffcc'; document.getElementById('hex-display').textContent = '#00FFCC';
         dataBerhasil = [{ id: "berhasil-1", src: "assets/berhasil.jpg", alt: "Berhasil" }];
         dataGagal = [{ id: "gagal-1", src: "assets/gagal.jpg", alt: "Gagal" }];
-        voiceSuccessInput.value = ''; voiceFailInput.value = ''; // Reset voice input
+        voiceSuccessInput.value = ''; voiceFailInput.value = ''; 
         zoomLevel = 1.0; zoomSlider.value = 1.0; zoomValText.textContent = "1.0x";
         currentFacingMode = "user"; cheatMode = "random"; 
         cheatStatusText.innerHTML = "STATUS: <span class='text-slate-400'>NORMAL (RANDOM)</span>";
@@ -671,7 +759,6 @@
           resultImage.src = chosen.src; resultImage.alt = chosen.alt;
 
           if (chosen.id.includes("gagal")) {
-            // === LOGIKA CUSTOM VOICE GAGAL ===
             let customFailVoice = voiceFailInput.value.trim();
             speakVoice(customFailVoice !== "" ? customFailVoice : "Ancaman keamanan siber terdeteksi. Mengunci perangkat secara paksa.");
             
@@ -689,7 +776,6 @@
             playSFX('success');
             const auraVal = Math.floor(Math.random() * 40 + 60); const charmVal = Math.floor(Math.random() * 30 + 70);
             
-            // === LOGIKA CUSTOM VOICE SUKSES ===
             let customSuccessVoice = voiceSuccessInput.value.trim();
             speakVoice(customSuccessVoice !== "" ? customSuccessVoice : `Akses otorisasi diterima. Keamanan level ${charmVal} persen.`);
 
